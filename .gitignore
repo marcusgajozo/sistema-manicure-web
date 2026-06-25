@@ -1,5 +1,9 @@
 *
 
+!.husky
+!.husky/**/*
+!docs
+!docs/**/*
 !public
 !public/**/*
 !src
@@ -7,10 +11,14 @@
 
 !.gitignore
 !.nvmrc
+!commitlint.config.mjs
 !eslint.config.mjs
+!lint-staged.config.mjs
 !next-env.d.ts
 !next.config.ts
 !package.json
+!prettier.config.mjs
+!.prettierignore
 !pnpm-lock.yaml
 !pnpm-workspace.yaml
 !postcss.config.mjs
