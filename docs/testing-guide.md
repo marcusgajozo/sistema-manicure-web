@@ -34,12 +34,12 @@ test/e2e/
 - O nome do arquivo deve corresponder ao que está sendo testado em `src/`.
 - Não use `.spec.ts` nem `.test.ts` para E2E neste projeto.
 
-| Arquivo em `src/`                            | Teste E2E correspondente                             |
-| -------------------------------------------- | ---------------------------------------------------- |
-| `src/app/page.tsx`                           | `test/e2e/app/page.e2e.ts`                           |
-| `src/app/layout.tsx`                         | `test/e2e/app/layout.e2e.ts`                         |
-| `src/common/components/shadcn-ui/button.tsx` | `test/e2e/common/components/shadcn-ui/button.e2e.ts` |
-| `src/app/entrar/page.tsx`                    | `test/e2e/app/entrar/page.e2e.ts`                    |
+| Arquivo em `src/`                                      | Teste E2E correspondente                                        |
+| ------------------------------------------------------ | --------------------------------------------------------------- |
+| `src/app/page.tsx`                                     | `test/e2e/app/page.e2e.ts`                                      |
+| `src/app/layout.tsx`                                   | `test/e2e/app/layout.e2e.ts`                                    |
+| `src/common/components/shadcn-ui/button.tsx`           | `test/e2e/common/components/shadcn-ui/button.e2e.ts`            |
+| `src/app/entrar/_components/login-form/login-form.tsx` | `test/e2e/app/entrar/page.e2e.ts` (página que usa o componente) |
 
 ### Exemplo
 

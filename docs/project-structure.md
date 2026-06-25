@@ -9,28 +9,94 @@ src/
   app/
     entrar/
       _components/       # componentes só da rota /entrar
-        login-form.tsx
-      _hooks/            # hooks só da rota /entrar (quando existirem)
+      _hooks/
       page.tsx
-    page.tsx
   common/
     components/
-      shadcn-ui/         # design system (shadcn)
-    lib/                 # utilitários compartilhados
-    hooks/               # hooks compartilhados
+      shadcn-ui/           # primitivos shadcn (padrão do CLI)
+      meu-componente/      # outros componentes compartilhados
+    lib/
+    hooks/
 ```
 
-## Regras
+## Duas convenções de componente
 
-### Colocation na rota (`_components`, `_hooks`, …)
+O projeto usa **dois padrões diferentes**, conforme o tipo do componente.
 
-Pastas com prefixo `_` ficam **ao lado da `page.tsx`** da feature:
+### 1. Componentes de feature e `common` (não shadcn)
+
+Pastas **kebab-case** com `index.ts` que apenas reexporta:
+
+```
+nome-do-componente/
+  nome-do-componente.tsx
+  index.ts
+```
+
+```ts
+// index.ts
+export { LoginForm } from "./login-form";
+```
+
+**Feature (`_components`):**
+
+```
+src/app/entrar/_components/login-form/
+  login-form.tsx
+  index.ts
+```
+
+```tsx
+import { LoginForm } from "./_components/login-form";
+```
+
+**Compartilhado (`common/components`):**
+
+```
+src/common/components/app-header/
+  app-header.tsx
+  index.ts
+```
+
+```tsx
+import { AppHeader } from "@/common/components/app-header";
+```
+
+### 2. Componentes shadcn (`common/components/shadcn-ui/`)
+
+Seguem o **padrão oficial do shadcn/ui** — arquivo único na raiz da pasta, **sem** subpasta nem `index.ts`:
+
+```
+src/common/components/shadcn-ui/
+  button.tsx
+  card.tsx
+  field.tsx
+  input.tsx
+  dialog.tsx   # adicionado via CLI
+```
+
+```tsx
+import { Button } from "@/common/components/shadcn-ui/button";
+import { Card, CardHeader } from "@/common/components/shadcn-ui/card";
+```
+
+|                | Feature / `common`               | shadcn                       |
+| -------------- | -------------------------------- | ---------------------------- |
+| Estrutura      | `pasta/arquivo.tsx` + `index.ts` | `arquivo.tsx` direto         |
+| Nome da pasta  | kebab-case                       | — (sem pasta por componente) |
+| Gerenciado por | manual                           | `pnpm dlx shadcn@latest add` |
+
+**Não** reorganize componentes shadcn em pastas com `index.ts` — isso quebra o fluxo do CLI e diverge da documentação do shadcn.
+
+## Colocation na rota (`_components`, `_hooks`, …)
+
+Pastas com prefixo `_` ficam **ao lado da `page.tsx`**:
 
 | Pasta          | Uso                                                 |
 | -------------- | --------------------------------------------------- |
 | `_components/` | Componentes usados apenas naquela rota ou sub-rotas |
 | `_hooks/`      | Hooks específicos da feature                        |
-| `_lib/`        | Funções/helpers só da feature (opcional)            |
+| `_lib/`        | Helpers só da feature (opcional)                    |
 | `_types/`      | Tipos só da feature (opcional)                      |
 
 **Exemplo:** login em `/entrar`
@@ -38,63 +104,52 @@ Pastas com prefixo `_` ficam **ao lado da `page.tsx`** da feature:
 ```
 src/app/entrar/
   _components/
-    login-form.tsx
+    login-form/
+      login-form.tsx
+      index.ts
   page.tsx
 ```
 
-Import na página:
+## `common/` — código compartilhado
 
-```tsx
-import { LoginForm } from "./_components/login-form";
-```
+| Pasta                          | Uso                                                              |
+| ------------------------------ | ---------------------------------------------------------------- |
+| `common/components/shadcn-ui/` | Primitivos de UI (shadcn) — padrão flat do CLI                   |
+| `common/components/`           | Componentes de negócio reutilizáveis — padrão pasta + `index.ts` |
+| `common/hooks/`                | Hooks reutilizáveis                                              |
+| `common/lib/`                  | Utilitários (`cn`, formatters, etc.)                             |
 
-### `common/` — código compartilhado
-
-Tudo que é usado por **duas ou mais features** vai para `common/`:
-
-| Pasta                          | Uso                                               |
-| ------------------------------ | ------------------------------------------------- |
-| `common/components/shadcn-ui/` | Componentes de UI do design system (shadcn)       |
-| `common/components/`           | Outros componentes reutilizáveis (fora do shadcn) |
-| `common/hooks/`                | Hooks reutilizáveis                               |
-| `common/lib/`                  | Utilitários (`cn`, formatters, etc.)              |
-
-Import:
-
-```tsx
-import { Button } from "@/common/components/shadcn-ui/button";
-import { cn } from "@/common/lib/utils";
-```
-
-### O que não fazer
+## O que não fazer
 
 - Não criar `src/components/auth/` para código usado só em `/entrar` — use `_components`.
 - Não colocar em `common/` algo usado por uma única rota.
-- Não misturar lógica de feature dentro de `common/components/shadcn-ui/` (apenas primitivos de UI).
+- Não aplicar pasta + `index.ts` em componentes shadcn.
+- Não misturar lógica de feature dentro de `shadcn-ui/` (apenas primitivos de UI).
 
 ## Sub-rotas
-
-Features com sub-rotas podem ter `_components` em cada nível ou compartilhar na pasta pai:
 
 ```
 src/app/agendamentos/
   _components/
-    agendamentos-list.tsx
+    agendamentos-list/
+      agendamentos-list.tsx
+      index.ts
   page.tsx
   novo/
     _components/
-      novo-agendamento-form.tsx
+      novo-agendamento-form/
+        novo-agendamento-form.tsx
+        index.ts
     page.tsx
 ```
 
-Prefira `_components` no nível mais específico; promova para o pai ou para `common/` quando houver reuso.
-
 ## shadcn/ui
 
-O CLI está configurado em `components.json` para instalar em `src/common/components/shadcn-ui/`:
+Configurado em `components.json` para instalar em `src/common/components/shadcn-ui/`:
 
 ```bash
 pnpm dlx shadcn@latest add dialog
+# gera: src/common/components/shadcn-ui/dialog.tsx
 ```
 
 ## Testes
@@ -102,7 +157,7 @@ pnpm dlx shadcn@latest add dialog
 A estrutura de `test/e2e/` espelha `src/app/`:
 
 ```
-src/app/entrar/page.tsx     →  test/e2e/app/entrar/page.e2e.ts
+src/app/entrar/page.tsx  →  test/e2e/app/entrar/page.e2e.ts
 ```
 
-Veja também [testing-guide.md](./testing-guide.md).
+Veja [testing-guide.md](./testing-guide.md).
