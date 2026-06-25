@@ -2,21 +2,21 @@
 
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/common/components/shadcn-ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-} from "@/components/ui/card";
+} from "@/common/components/shadcn-ui/card";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+} from "@/common/components/shadcn-ui/field";
+import { Input } from "@/common/components/shadcn-ui/input";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
