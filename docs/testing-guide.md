@@ -6,7 +6,7 @@ Este documento define como organizar e executar testes no projeto.
 
 | Tipo     | Pasta         | Sufixo do arquivo        | Comando          |
 | -------- | ------------- | ------------------------ | ---------------- |
-| Unitário | `src/**`      | `.test.ts` / `.test.tsx` | `pnpm test:unit` |
+| Unitário | `src/**`      | `.spec.ts` / `.spec.tsx` | `pnpm test:unit` |
 | E2E      | `test/e2e/**` | `.e2e.ts`                | `pnpm test:e2e`  |
 | Todos    | —             | —                        | `pnpm test:all`  |
 
@@ -76,15 +76,15 @@ Ficam junto ao código ou em pastas de teste dentro de `src/`:
 src/
   lib/
     format.ts
-    format.test.ts
+    format.spec.ts
   __tests__/
-    smoke.test.ts
+    smoke.spec.ts
 ```
 
 ### Convenção de nomenclatura
 
-- Use `.test.ts` ou `.test.tsx`.
-- Não use `.e2e.ts` para testes unitários.
+- Use `.spec.ts` ou `.spec.tsx`.
+- Não use `.e2e.ts` nem `.test.ts` para testes unitários neste projeto.
 
 ### Comandos
 
