@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import type { z } from "zod";
 
-import { Button } from "@/common/components/shadcn-ui/button";
+import { FormButton } from "@/common/components/form-button";
+import { FormInput } from "@/common/components/form-input";
 import {
   Card,
   CardContent,
@@ -10,43 +13,31 @@ import {
   CardFooter,
   CardHeader,
 } from "@/common/components/shadcn-ui/card";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/common/components/shadcn-ui/field";
-import { Input } from "@/common/components/shadcn-ui/input";
+import { FieldError, FieldGroup } from "@/common/components/shadcn-ui/field";
+import { signInDtoSchema } from "@/common/services/api/authentication/schemas";
+
+import { signInAction } from "../../_actions/sign-in";
+
+type SignInFormValues = z.infer<typeof signInDtoSchema>;
 
 export function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const form = useForm<SignInFormValues>({
+    resolver: zodResolver(signInDtoSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
-    setIsSubmitting(true);
+  const rootError = form.formState.errors.root?.message;
 
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email, password }),
-      });
+  async function onSubmit(values: SignInFormValues) {
+    form.clearErrors("root");
 
-      if (!response.ok) {
-        setError("E-mail ou senha inválidos.");
-        return;
-      }
+    const result = await signInAction(values);
 
-      window.location.assign("/");
-    } catch {
-      setError("Não foi possível entrar. Tente novamente.");
-    } finally {
-      setIsSubmitting(false);
+    if (result?.error) {
+      form.setError("root", { message: result.error });
     }
   }
 
@@ -60,42 +51,37 @@ export function LoginForm() {
           Acesse o sistema com seu e-mail e senha.
         </CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <CardContent>
           <FieldGroup>
-            <Field data-invalid={error ? true : undefined}>
-              <FieldLabel htmlFor="email">E-mail</FieldLabel>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                aria-invalid={error ? true : undefined}
-              />
-            </Field>
-            <Field data-invalid={error ? true : undefined}>
-              <FieldLabel htmlFor="password">Senha</FieldLabel>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                aria-invalid={error ? true : undefined}
-              />
-              {error ? <FieldError>{error}</FieldError> : null}
-            </Field>
+            <FormInput
+              control={form.control}
+              name="email"
+              label="E-mail"
+              type="email"
+              autoComplete="email"
+              required
+            />
+            <FormInput
+              control={form.control}
+              name="password"
+              label="Senha"
+              type="password"
+              autoComplete="current-password"
+              required
+            />
+            {rootError ? <FieldError>{rootError}</FieldError> : null}
           </FieldGroup>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Entrando..." : "Entrar"}
-          </Button>
+          <FormButton
+            type="submit"
+            className="w-full"
+            loading={form.formState.isSubmitting}
+            loadingText="Entrando..."
+          >
+            Entrar
+          </FormButton>
         </CardFooter>
       </form>
     </Card>

@@ -25,5 +25,8 @@ export default defineConfig({
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    env: {
+      API_URL: process.env.API_URL ?? "http://172.17.0.1:3001",
+    },
   },
 });
