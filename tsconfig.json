@@ -29,7 +29,10 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts",
-    "commitlint.config.mjs"
+    "commitlint.config.mjs",
+    "vitest.config.ts",
+    "vitest.setup.ts",
+    "test/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

@@ -8,6 +8,8 @@
 !public/**/*
 !src
 !src/**/*
+!test
+!test/**/*
 
 !.gitignore
 !.nvmrc
@@ -17,6 +19,7 @@
 !next-env.d.ts
 !next.config.ts
 !package.json
+!playwright.config.ts
 !prettier.config.mjs
 !.prettierignore
 !pnpm-lock.yaml
@@ -24,3 +27,5 @@
 !postcss.config.mjs
 !README.md
 !tsconfig.json
+!vitest.config.ts
+!vitest.setup.ts
