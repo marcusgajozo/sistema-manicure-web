@@ -1,11 +1,12 @@
 import type { MenuItem } from "./menu-types";
+import { APP_ROUTES } from "./routes";
 
 export const MENU_ITEMS: MenuItem[] = [
   {
     type: "link",
     label: "Dashboard",
     icon: "layoutDashboard",
-    href: "/",
+    href: APP_ROUTES.dashboard,
   },
   {
     type: "group",
@@ -16,13 +17,13 @@ export const MENU_ITEMS: MenuItem[] = [
         type: "link",
         label: "Lista",
         icon: "list",
-        href: "/agendamentos",
+        href: APP_ROUTES.agendamentos.list,
       },
       {
         type: "link",
         label: "Novo",
         icon: "plus",
-        href: "/agendamentos/novo",
+        href: APP_ROUTES.agendamentos.create,
       },
     ],
   },
@@ -35,13 +36,13 @@ export const MENU_ITEMS: MenuItem[] = [
         type: "link",
         label: "Lista",
         icon: "list",
-        href: "/clientes",
+        href: APP_ROUTES.clientes.list,
       },
       {
         type: "link",
         label: "Novo",
         icon: "plus",
-        href: "/clientes/novo",
+        href: APP_ROUTES.clientes.create,
       },
     ],
   },
