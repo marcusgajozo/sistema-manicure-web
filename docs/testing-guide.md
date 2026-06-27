@@ -4,28 +4,36 @@ Este documento define como organizar e executar testes no projeto.
 
 ## Visão geral
 
-| Tipo     | Pasta         | Sufixo do arquivo        | Comando          |
-| -------- | ------------- | ------------------------ | ---------------- |
-| Unitário | `src/**`      | `.spec.ts` / `.spec.tsx` | `pnpm test:unit` |
-| E2E      | `test/e2e/**` | `.e2e.ts`                | `pnpm test:e2e`  |
-| Todos    | —             | —                        | `pnpm test:all`  |
+| Tipo     | Pasta             | Sufixo do arquivo        | Comando          |
+| -------- | ----------------- | ------------------------ | ---------------- |
+| Unitário | `src/**`          | `.spec.ts` / `.spec.tsx` | `pnpm test:unit` |
+| E2E      | `test/e2e/src/**` | `.e2e.ts`                | `pnpm test:e2e`  |
+| Todos    | —                 | —                        | `pnpm test:all`  |
 
 ## Testes E2E (Playwright)
 
 ### Localização
 
-Os testes E2E ficam em `test/e2e/` e **espelham a estrutura de `src/`**.
+Os testes E2E ficam em `test/e2e/src/` e **espelham a estrutura de `src/`**.
 
 ```
 src/
   app/
-    page.tsx
-    layout.tsx
+    (public)/
+      entrar/
+        page.tsx
+    (private)/
+      (dashboard)/
+        page.tsx
 
-test/e2e/
+test/e2e/src/
   app/
-    page.e2e.ts
-    layout.e2e.ts
+    (public)/
+      entrar/
+        page.e2e.ts
+    (private)/
+      (dashboard)/
+        page.e2e.ts
 ```
 
 ### Convenção de nomenclatura
@@ -34,21 +42,22 @@ test/e2e/
 - O nome do arquivo deve corresponder ao que está sendo testado em `src/`.
 - Não use `.spec.ts` nem `.test.ts` para E2E neste projeto.
 
-| Arquivo em `src/`                                      | Teste E2E correspondente                                        |
-| ------------------------------------------------------ | --------------------------------------------------------------- |
-| `src/app/page.tsx`                                     | `test/e2e/app/page.e2e.ts`                                      |
-| `src/app/layout.tsx`                                   | `test/e2e/app/layout.e2e.ts`                                    |
-| `src/common/components/shadcn-ui/button.tsx`           | `test/e2e/common/components/shadcn-ui/button.e2e.ts`            |
-| `src/app/entrar/_components/login-form/login-form.tsx` | `test/e2e/app/entrar/page.e2e.ts` (página que usa o componente) |
+| Arquivo em `src/`                                    | Teste E2E correspondente                                                     |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `src/app/(private)/(dashboard)/page.tsx`             | `test/e2e/src/app/(private)/(dashboard)/page.e2e.ts`                         |
+| `src/app/(public)/entrar/page.tsx`                   | `test/e2e/src/app/(public)/entrar/page.e2e.ts`                               |
+| `src/app/layout.tsx`                                 | `test/e2e/src/app/layout.e2e.ts`                                             |
+| `src/common/components/shadcn-ui/button.tsx`         | `test/e2e/src/common/components/shadcn-ui/button.e2e.ts`                     |
+| `src/app/(public)/entrar/_components/login-form/...` | `test/e2e/src/app/(public)/entrar/page.e2e.ts` (página que usa o componente) |
 
 ### Exemplo
 
 ```ts
-// test/e2e/app/page.e2e.ts
+// test/e2e/src/app/(private)/(dashboard)/page.e2e.ts
 import { expect, test } from "@playwright/test";
 
-test.describe("Home page", () => {
-  test("renders the main heading", async ({ page }) => {
+test.describe("Dashboard page", () => {
+  test("renders the dashboard", async ({ page }) => {
     await page.goto("/");
 
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();

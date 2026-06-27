@@ -3,7 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 const baseURL = "http://127.0.0.1:3000";
 
 export default defineConfig({
-  testDir: "./test/e2e",
+  testDir: "./test/e2e/src",
   testMatch: "**/*.e2e.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,

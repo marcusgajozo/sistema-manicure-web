@@ -218,10 +218,11 @@ pnpm dlx shadcn@latest add dialog
 
 ## Testes
 
-A estrutura de `test/e2e/` espelha `src/app/`:
+A estrutura de `test/e2e/src/` espelha `src/`:
 
 ```
-src/app/entrar/page.tsx  →  test/e2e/app/entrar/page.e2e.ts
+src/app/(public)/entrar/page.tsx              →  test/e2e/src/app/(public)/entrar/page.e2e.ts
+src/app/(private)/(dashboard)/page.tsx        →  test/e2e/src/app/(private)/(dashboard)/page.e2e.ts
 ```
 
 Veja [testing-guide.md](./testing-guide.md).
