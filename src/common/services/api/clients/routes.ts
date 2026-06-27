@@ -5,6 +5,7 @@ import { defineApiRoutes } from "typed-route-client/core";
 import { apiErrorSchema } from "../shared/schemas/api-error";
 import {
   createClientDtoSchema,
+  getClientResponseSchema,
   getClientsResponseSchema,
   updateClientDtoSchema,
 } from "./schemas";
@@ -25,10 +26,12 @@ export const clientsRoutes = defineApiRoutes({
   "/clients/:id": {
     methods: {
       get: {
+        responseSchema: getClientResponseSchema,
         errorSchema: apiErrorSchema,
       },
       patch: {
         bodySchema: updateClientDtoSchema,
+        responseSchema: getClientResponseSchema,
         errorSchema: apiErrorSchema,
       },
       delete: {

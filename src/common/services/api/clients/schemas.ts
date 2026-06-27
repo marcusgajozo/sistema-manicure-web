@@ -25,5 +25,10 @@ export const clientSchema = z.object({
 export const getClientsResponseSchema =
   createPaginatedResponseSchema(clientSchema);
 
+export const getClientResponseSchema = z.object({
+  data: clientSchema,
+});
+
 export type Client = z.infer<typeof clientSchema>;
 export type GetClientsResponse = z.infer<typeof getClientsResponseSchema>;
+export type GetClientResponse = z.infer<typeof getClientResponseSchema>;
