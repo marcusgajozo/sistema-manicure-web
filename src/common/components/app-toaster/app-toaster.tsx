@@ -1,0 +1,31 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { toast, Toaster } from "sonner";
+
+import { consumeFlashToastAction } from "@/common/lib/toast/flash-toast-action";
+
+type AppToasterProps = {
+  flashMessage?: string | null;
+};
+
+export function AppToaster({ flashMessage = null }: AppToasterProps) {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (flashMessage) {
+      toast.error(flashMessage);
+    }
+  }, [flashMessage]);
+
+  useEffect(() => {
+    void consumeFlashToastAction().then((message) => {
+      if (message) {
+        toast.error(message);
+      }
+    });
+  }, [pathname]);
+
+  return <Toaster richColors closeButton position="top-right" />;
+}

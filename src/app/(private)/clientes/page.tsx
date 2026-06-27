@@ -6,9 +6,9 @@ import {
   CardDescription,
   CardHeader,
 } from "@/common/components/shadcn-ui/card";
+import { apiClient } from "@/common/services/api/server-client";
 
 import { ClientsTable, ClientsTableActions } from "./_components/clients-table";
-import { listClients } from "./_lib/clients-queries";
 
 export const metadata: Metadata = {
   title: "Clientes",
@@ -18,6 +18,13 @@ const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
   dateStyle: "short",
   timeStyle: "short",
 });
+
+const emptyMeta = {
+  page: 1,
+  limit: 10,
+  totalCount: 0,
+  totalPages: 0,
+};
 
 type ClientesPageProps = {
   searchParams: Promise<{
@@ -43,7 +50,19 @@ export default async function ClientesPage({
   const page = parsePositiveInt(params.page, 1);
   const limit = parsePositiveInt(params.limit, 10);
 
-  const { data, meta } = await listClients({ page, limit });
+  let response = null;
+  // TODO: verificar por que o respose está any
+  try {
+    response = await apiClient.callRoute("/clients", {
+      method: "get",
+      queryParams: { page, limit },
+    });
+  } catch {
+    response = null;
+  }
+
+  const data = response?.data ?? [];
+  const meta = response?.meta ?? { ...emptyMeta, page, limit };
   const rows = data.map((client) => ({
     ...client,
     createdAtLabel: dateFormatter.format(new Date(client.createdAt)),
