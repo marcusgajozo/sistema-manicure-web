@@ -1,8 +1,10 @@
 import { expect, test } from "@playwright/test";
 
+import { APP_ROUTES } from "@/common/lib/navigation/routes";
+
 test.describe("Login page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/entrar");
+    await page.goto(APP_ROUTES.login);
   });
 
   test("displays the login form", async ({ page }) => {
