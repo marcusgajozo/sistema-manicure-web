@@ -1,1 +1,1 @@
-export const ACCESS_TOKEN_COOKIE = "access_token";
+export { ACCESS_TOKEN_COOKIE, AUTH_API_PATHS, AUTH_COOKIES } from "./cookies";

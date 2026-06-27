@@ -1,3 +1,5 @@
+import type { DeepRouteValues } from "./generate-url";
+
 export const APP_ROUTES = {
   dashboard: "/",
   login: "/entrar",
@@ -8,8 +10,14 @@ export const APP_ROUTES = {
   clientes: {
     list: "/clientes",
     create: "/clientes/novo",
+    edit: "/clientes/:id/editar",
   },
 } as const;
+
+export type { DeepRouteValues, RouteParamsFor } from "./generate-url";
+export { generateUrl } from "./generate-url";
+
+export type AppRoutePattern = DeepRouteValues<typeof APP_ROUTES>;
 
 export const PUBLIC_ROUTE_PATHS = [APP_ROUTES.login] as const;
 
