@@ -27,10 +27,23 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
   {
-    type: "link",
+    type: "group",
     label: "Clientes",
     icon: "users",
-    href: "/clientes",
+    items: [
+      {
+        type: "link",
+        label: "Lista",
+        icon: "list",
+        href: "/clientes",
+      },
+      {
+        type: "link",
+        label: "Novo",
+        icon: "plus",
+        href: "/clientes/novo",
+      },
+    ],
   },
   {
     type: "action",
