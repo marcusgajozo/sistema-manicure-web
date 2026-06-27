@@ -61,7 +61,7 @@ export default async function ClientesPage({
         <ClientsTableActions />
       </CardHeader>
       <CardContent>
-        <ClientsTable data={rows} meta={meta} limit={limit} />
+        <ClientsTable data={rows} meta={meta} />
       </CardContent>
     </Card>
   );

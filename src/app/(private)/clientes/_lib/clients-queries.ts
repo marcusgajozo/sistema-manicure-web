@@ -3,6 +3,7 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { HttpTransportError } from "typed-route-client/core";
 
+import { APP_ROUTES } from "@/common/lib/navigation/routes";
 import { createClientDtoSchema } from "@/common/services/api/clients/schemas";
 import { apiClient } from "@/common/services/api/server-client";
 
@@ -13,7 +14,7 @@ type ListClientsParams = {
 
 function handleUnauthorized(error: unknown) {
   if (error instanceof HttpTransportError && error.status === 401) {
-    redirect("/entrar");
+    redirect(APP_ROUTES.login);
   }
 }
 

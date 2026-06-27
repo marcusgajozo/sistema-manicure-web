@@ -7,6 +7,7 @@ import {
   PaginatedList,
 } from "@/common/components/paginated-list";
 import { Button } from "@/common/components/shadcn-ui/button";
+import { APP_ROUTES } from "@/common/lib/navigation/routes";
 import { Client } from "@/common/services/api/clients/schemas";
 import type { PaginationMeta } from "@/common/services/api/shared/schemas/pagination-meta";
 
@@ -35,33 +36,15 @@ const columns: DataTableColumn<ClientTableRow>[] = [
 type ClientsTableProps = {
   data: ClientTableRow[];
   meta: PaginationMeta;
-  limit: number;
 };
 
-function buildClientesPageHref(page: number, limit: number) {
-  const params = new URLSearchParams();
-
-  if (page > 1) {
-    params.set("page", String(page));
-  }
-
-  if (limit !== 10) {
-    params.set("limit", String(limit));
-  }
-
-  const query = params.toString();
-
-  return query ? `/clientes?${query}` : "/clientes";
-}
-
-export function ClientsTable({ data, meta, limit }: ClientsTableProps) {
+export function ClientsTable({ data, meta }: ClientsTableProps) {
   return (
     <PaginatedList
       columns={columns}
       data={data}
       meta={meta}
       getRowKey={(client) => client.id}
-      getPageHref={(page) => buildClientesPageHref(page, limit)}
       emptyMessage="Nenhum cliente cadastrado."
     />
   );
@@ -69,7 +52,10 @@ export function ClientsTable({ data, meta, limit }: ClientsTableProps) {
 
 export function ClientsTableActions() {
   return (
-    <Button nativeButton={false} render={<Link href="/clientes/novo" />}>
+    <Button
+      nativeButton={false}
+      render={<Link href={APP_ROUTES.clientes.create} />}
+    >
       Novo cliente
     </Button>
   );

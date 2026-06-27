@@ -3,6 +3,8 @@
 import { redirect } from "next/navigation";
 import { HttpTransportError } from "typed-route-client/core";
 
+import { APP_ROUTES } from "@/common/lib/navigation/routes";
+
 import { createClient } from "../../_lib/clients-queries";
 
 export type CreateClientActionState = {
@@ -17,7 +19,7 @@ export async function createClientAction(
   } catch (error) {
     if (error instanceof HttpTransportError) {
       if (error.status === 401) {
-        redirect("/entrar");
+        redirect(APP_ROUTES.login);
       }
 
       if (error.status === 400 || error.status === 409) {
@@ -30,5 +32,5 @@ export async function createClientAction(
     return { error: "Não foi possível cadastrar o cliente. Tente novamente." };
   }
 
-  redirect("/clientes");
+  redirect(APP_ROUTES.clientes.list);
 }

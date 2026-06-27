@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { HttpTransportError } from "typed-route-client/core";
 
+import { APP_ROUTES } from "@/common/lib/navigation/routes";
 import { signInDtoSchema } from "@/common/services/api/authentication/schemas";
 import { apiClient } from "@/common/services/api/server-client";
 
@@ -26,5 +27,5 @@ export async function signInAction(input: unknown): Promise<SignInActionState> {
     return { error: "Não foi possível entrar. Tente novamente." };
   }
 
-  redirect("/");
+  redirect(APP_ROUTES.dashboard);
 }
