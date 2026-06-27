@@ -3,7 +3,11 @@
 import { defineApiRoutes } from "typed-route-client/core";
 
 import { apiErrorSchema } from "../shared/schemas/api-error";
-import { createClientDtoSchema, updateClientDtoSchema } from "./schemas";
+import {
+  createClientDtoSchema,
+  getClientsResponseSchema,
+  updateClientDtoSchema,
+} from "./schemas";
 
 export const clientsRoutes = defineApiRoutes({
   "/clients": {
@@ -13,6 +17,7 @@ export const clientsRoutes = defineApiRoutes({
         errorSchema: apiErrorSchema,
       },
       get: {
+        responseSchema: getClientsResponseSchema,
         errorSchema: apiErrorSchema,
       },
     },
