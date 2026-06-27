@@ -7,17 +7,79 @@ O projeto segue organização **feature-first**: código específico de uma rota
 ```
 src/
   app/
-    entrar/
-      _components/       # componentes só da rota /entrar
-      _hooks/
-      page.tsx
+    layout.tsx                 # root (fonts, globals)
+    (public)/                  # rotas públicas (sem sidebar)
+      layout.tsx
+      entrar/
+        _components/
+        page.tsx               # /entrar
+    (private)/                 # área autenticada (com sidebar)
+      layout.tsx               # PrivateShell
+      (dashboard)/             # grupo do dashboard
+        page.tsx               # / — dashboard
+      agendamentos/
+      clientes/
   common/
     components/
-      shadcn-ui/           # primitivos shadcn (padrão do CLI)
-      meu-componente/      # outros componentes compartilhados
+      app-sidebar/             # menu lateral (lê MENU_ITEMS)
+      private-shell/           # SidebarProvider + layout privado
+      shadcn-ui/               # primitivos shadcn (padrão do CLI)
     lib/
+      navigation/
+        menu-items.ts          # const MENU_ITEMS — config do menu
+        menu-types.ts
     hooks/
 ```
+
+## Route groups `(public)` e `(private)`
+
+Route groups **não aparecem na URL** — servem só para separar layouts.
+
+| Grupo       | Layout                        | Exemplos de rota        |
+| ----------- | ----------------------------- | ----------------------- |
+| `(public)`  | Simples, sem sidebar          | `/entrar`               |
+| `(private)` | `PrivateShell` + `AppSidebar` | `/`, `/agendamentos`, … |
+
+```
+src/app/(public)/entrar/page.tsx     →  /entrar
+src/app/(private)/(dashboard)/page.tsx →  /
+src/app/(private)/clientes/...       →  /clientes
+```
+
+Novas páginas autenticadas ficam dentro de `(private)/`. Páginas de login, cadastro etc. ficam em `(public)/`.
+
+## Navegação (sidebar)
+
+O menu lateral é configurado declarativamente em `src/common/lib/navigation/menu-items.ts`:
+
+```ts
+export const MENU_ITEMS: MenuItem[] = [
+  { type: "link", label: "Dashboard", icon: "layoutDashboard", href: "/" },
+  {
+    type: "group",
+    label: "Agendamentos",
+    icon: "calendar",
+    items: [
+      { type: "link", label: "Lista", icon: "list", href: "/agendamentos" },
+      // ...
+    ],
+  },
+  { type: "action", label: "Sair", icon: "logOut", actionId: "sign-out" },
+];
+```
+
+| Tipo     | Campos principais       | Comportamento                    |
+| -------- | ----------------------- | -------------------------------- |
+| `link`   | `href`, `icon`, `label` | Navega para a rota               |
+| `group`  | `items[]`               | Submenu (collapsible / dropdown) |
+| `action` | `actionId`              | Ação custom (ex.: logout)        |
+
+Componentes relacionados:
+
+- `common/components/app-sidebar/` — renderiza `MENU_ITEMS` com sidebar colapsável (`collapsible="icon"`)
+- `common/components/private-shell/` — envolve páginas privadas com `SidebarProvider`
+
+Para adicionar um item ao menu, edite apenas `menu-items.ts` e registre o ícone em `common/components/icon/icons.ts` se necessário.
 
 ## Duas convenções de componente
 
@@ -102,7 +164,7 @@ Pastas com prefixo `_` ficam **ao lado da `page.tsx`**:
 **Exemplo:** login em `/entrar`
 
 ```
-src/app/entrar/
+src/app/(public)/entrar/
   _components/
     login-form/
       login-form.tsx
@@ -128,8 +190,10 @@ src/app/entrar/
 
 ## Sub-rotas
 
+Rotas privadas ficam sob `(private)/`:
+
 ```
-src/app/agendamentos/
+src/app/(private)/agendamentos/
   _components/
     agendamentos-list/
       agendamentos-list.tsx
