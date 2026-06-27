@@ -1,3 +1,7 @@
+"use client";
+
+import { usePathname, useSearchParams } from "next/navigation";
+
 import {
   Pagination,
   PaginationContent,
@@ -10,22 +14,32 @@ import {
 import { cn } from "@/common/lib/utils";
 import type { PaginationMeta } from "@/common/services/api/shared/schemas/pagination-meta";
 
+import { buildPaginatedPath } from "./build-paginated-path";
 import { getPaginationRange } from "./get-pagination-range";
 
 type PaginationControlsProps = {
   meta: PaginationMeta;
-  getPageHref: (page: number) => string;
   className?: string;
 };
 
 export function PaginationControls({
   meta,
-  getPageHref,
   className,
 }: PaginationControlsProps) {
-  const { page, totalPages, totalCount } = meta;
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { page, limit, totalPages, totalCount } = meta;
   const paginationRange = getPaginationRange(page, totalPages);
   const showPagination = totalPages > 1;
+
+  function getPageHref(targetPage: number) {
+    return buildPaginatedPath({
+      pathname,
+      searchParams: new URLSearchParams(searchParams.toString()),
+      page: targetPage,
+      limit,
+    });
+  }
 
   return (
     <div

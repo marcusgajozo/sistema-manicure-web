@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { type ReactNode, Suspense } from "react";
 
 import { PaginationControls } from "@/common/components/pagination-controls";
 import { cn } from "@/common/lib/utils";
@@ -14,7 +14,6 @@ type PaginatedListProps<T> = {
   columns: DataTableColumn<T>[];
   data: T[];
   meta: PaginationMeta;
-  getPageHref: (page: number) => string;
   getRowKey?: (row: T, index: number) => string | number;
   renderCard?: (row: T) => ReactNode;
   emptyMessage?: string;
@@ -25,7 +24,6 @@ export function PaginatedList<T>({
   columns,
   data,
   meta,
-  getPageHref,
   getRowKey,
   renderCard,
   emptyMessage = "Nenhum registro encontrado.",
@@ -60,7 +58,17 @@ export function PaginatedList<T>({
         )}
       </div>
 
-      <PaginationControls meta={meta} getPageHref={getPageHref} />
+      <Suspense
+        fallback={
+          <p className="text-sm text-muted-foreground">
+            {meta.totalCount === 0
+              ? "Nenhum registro"
+              : `${meta.totalCount} registro${meta.totalCount === 1 ? "" : "s"}`}
+          </p>
+        }
+      >
+        <PaginationControls meta={meta} />
+      </Suspense>
     </div>
   );
 }

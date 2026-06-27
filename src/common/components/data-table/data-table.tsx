@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+
 import { PaginationControls } from "@/common/components/pagination-controls";
 import { cn } from "@/common/lib/utils";
 import type { PaginationMeta } from "@/common/services/api/shared/schemas/pagination-meta";
@@ -11,7 +13,6 @@ type DataTableProps<T> = {
   columns: DataTableColumn<T>[];
   data: T[];
   meta: PaginationMeta;
-  getPageHref: (page: number) => string;
   getRowKey?: (row: T, index: number) => string | number;
   emptyMessage?: string;
   className?: string;
@@ -21,7 +22,6 @@ export function DataTable<T>({
   columns,
   data,
   meta,
-  getPageHref,
   getRowKey,
   emptyMessage = "Nenhum registro encontrado.",
   className,
@@ -34,7 +34,17 @@ export function DataTable<T>({
         getRowKey={getRowKey}
         emptyMessage={emptyMessage}
       />
-      <PaginationControls meta={meta} getPageHref={getPageHref} />
+      <Suspense
+        fallback={
+          <p className="text-sm text-muted-foreground">
+            {meta.totalCount === 0
+              ? "Nenhum registro"
+              : `${meta.totalCount} registro${meta.totalCount === 1 ? "" : "s"}`}
+          </p>
+        }
+      >
+        <PaginationControls meta={meta} />
+      </Suspense>
     </div>
   );
 }
