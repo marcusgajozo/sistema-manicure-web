@@ -2,7 +2,7 @@
 
 import { ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { Icon } from "@/common/components/icon";
 import {
@@ -33,6 +33,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/common/components/shadcn-ui/sidebar";
+import { signOutAction } from "@/common/lib/auth/sign-out";
 import { MENU_ITEMS } from "@/common/lib/navigation/menu-items";
 import type {
   MenuAction,
@@ -41,21 +42,20 @@ import type {
   MenuLeafItem,
   MenuLink,
 } from "@/common/lib/navigation/menu-types";
+import { APP_ROUTES } from "@/common/lib/navigation/routes";
 
 function isPathActive(pathname: string, href: string) {
-  if (href === "/") {
-    return pathname === "/";
+  if (href === APP_ROUTES.dashboard) {
+    return pathname === APP_ROUTES.dashboard;
   }
 
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 function useMenuActionHandler() {
-  const router = useRouter();
-
   return (actionId: string) => {
     if (actionId === "sign-out") {
-      router.push("/entrar");
+      void signOutAction();
     }
   };
 }
@@ -221,7 +221,7 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              render={<Link href="/" />}
+              render={<Link href={APP_ROUTES.dashboard} />}
               tooltip="Sistema Manicure"
               size="lg"
             >
