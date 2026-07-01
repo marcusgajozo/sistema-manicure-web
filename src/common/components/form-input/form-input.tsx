@@ -54,6 +54,15 @@ export function FormInput<TFieldValues extends FieldValues>({
           <FieldLabel htmlFor={inputId}>{label}</FieldLabel>
           <Input
             {...field}
+            value={field.value ?? ""}
+            onChange={(e) => {
+              if (type === "number") {
+                const val = e.target.value;
+                field.onChange(val === "" ? undefined : Number(val));
+              } else {
+                field.onChange(e);
+              }
+            }}
             id={inputId}
             type={type}
             autoComplete={autoComplete}
