@@ -2,6 +2,7 @@ import type { DeepRouteValues } from "./generate-url";
 
 export const APP_ROUTES = {
   dashboard: "/",
+  calendario: "/calendario",
   login: "/entrar",
   agendamentos: {
     list: "/agendamentos",

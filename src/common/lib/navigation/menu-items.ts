@@ -9,6 +9,12 @@ export const MENU_ITEMS: MenuItem[] = [
     href: APP_ROUTES.dashboard,
   },
   {
+    type: "link",
+    label: "Calendário",
+    icon: "calendar",
+    href: APP_ROUTES.calendario,
+  },
+  {
     type: "group",
     label: "Agendamentos",
     icon: "calendar",
