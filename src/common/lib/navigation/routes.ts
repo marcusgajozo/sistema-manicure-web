@@ -12,6 +12,11 @@ export const APP_ROUTES = {
     create: "/clientes/novo",
     edit: "/clientes/:id/editar",
   },
+  procedimentos: {
+    list: "/procedimentos",
+    create: "/procedimentos/novo",
+    edit: "/procedimentos/:id/editar",
+  },
 } as const;
 
 export type { DeepRouteValues, RouteParamsFor } from "./generate-url";

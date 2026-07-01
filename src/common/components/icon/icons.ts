@@ -7,6 +7,7 @@ import {
   type LucideProps,
   PencilIcon,
   PlusIcon,
+  ScissorsIcon,
   Trash2Icon,
   UsersIcon,
 } from "lucide-react";
@@ -20,6 +21,7 @@ export const icons = {
   logOut: LogOutIcon,
   pencil: PencilIcon,
   plus: PlusIcon,
+  scissors: ScissorsIcon,
   trash2: Trash2Icon,
   users: UsersIcon,
 } as const satisfies Record<string, ComponentType<LucideProps>>;

@@ -3,7 +3,12 @@
 import { defineApiRoutes } from "typed-route-client/core";
 
 import { apiErrorSchema } from "../shared/schemas/api-error";
-import { createProcedureDtoSchema, updateProcedureDtoSchema } from "./schemas";
+import {
+  createProcedureDtoSchema,
+  getProcedureResponseSchema,
+  getProceduresResponseSchema,
+  updateProcedureDtoSchema,
+} from "./schemas";
 
 export const proceduresRoutes = defineApiRoutes({
   "/procedures": {
@@ -13,6 +18,7 @@ export const proceduresRoutes = defineApiRoutes({
         errorSchema: apiErrorSchema,
       },
       get: {
+        responseSchema: getProceduresResponseSchema,
         errorSchema: apiErrorSchema,
       },
     },
@@ -20,10 +26,12 @@ export const proceduresRoutes = defineApiRoutes({
   "/procedures/:id": {
     methods: {
       get: {
+        responseSchema: getProcedureResponseSchema,
         errorSchema: apiErrorSchema,
       },
       patch: {
         bodySchema: updateProcedureDtoSchema,
+        responseSchema: getProcedureResponseSchema,
         errorSchema: apiErrorSchema,
       },
       delete: {

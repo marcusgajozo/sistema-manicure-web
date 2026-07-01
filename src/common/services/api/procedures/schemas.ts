@@ -2,6 +2,8 @@
 
 import { z } from "zod";
 
+import { createPaginatedResponseSchema } from "../shared/schemas/paginated-response";
+
 export const createProcedureDtoSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
@@ -17,3 +19,27 @@ export const updateProcedureDtoSchema = z.object({
   returnDays: z.number().min(0).optional(),
   durationMinutes: z.number().min(0).optional(),
 });
+
+export const procedureSchema = z.object({
+  id: z.uuid(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  deletedAt: z.string().nullable(),
+  name: z.string(),
+  description: z.string().nullable(),
+  price: z.number(),
+  returnDays: z.number(),
+  durationMinutes: z.number(),
+  userId: z.uuid(),
+});
+
+export const getProceduresResponseSchema =
+  createPaginatedResponseSchema(procedureSchema);
+
+export const getProcedureResponseSchema = z.object({
+  data: procedureSchema,
+});
+
+export type Procedure = z.infer<typeof procedureSchema>;
+export type GetProceduresResponse = z.infer<typeof getProceduresResponseSchema>;
+export type GetProcedureResponse = z.infer<typeof getProcedureResponseSchema>;

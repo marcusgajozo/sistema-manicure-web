@@ -47,6 +47,25 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
   {
+    type: "group",
+    label: "Procedimentos",
+    icon: "scissors",
+    items: [
+      {
+        type: "link",
+        label: "Lista",
+        icon: "list",
+        href: APP_ROUTES.procedimentos.list,
+      },
+      {
+        type: "link",
+        label: "Novo",
+        icon: "plus",
+        href: APP_ROUTES.procedimentos.create,
+      },
+    ],
+  },
+  {
     type: "action",
     label: "Sair",
     icon: "logOut",
