@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
-import { FormButton } from "@/common/components/form-button";
+import { AppButton } from "@/common/components/app-button";
 import { FormInput } from "@/common/components/form-input";
 import {
   Card,
@@ -74,14 +74,14 @@ export function LoginForm() {
           </FieldGroup>
         </CardContent>
         <CardFooter>
-          <FormButton
+          <AppButton
             type="submit"
             className="w-full"
             loading={form.formState.isSubmitting}
             loadingText="Entrando..."
           >
             Entrar
-          </FormButton>
+          </AppButton>
         </CardFooter>
       </form>
     </Card>

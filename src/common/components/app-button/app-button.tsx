@@ -4,19 +4,19 @@ import { Icon } from "@/common/components/icon";
 import { Button } from "@/common/components/shadcn-ui/button";
 import { cn } from "@/common/lib/utils";
 
-type FormButtonProps = React.ComponentProps<typeof Button> & {
+type AppButtonProps = React.ComponentProps<typeof Button> & {
   loading?: boolean;
   loadingText?: string;
 };
 
-export function FormButton({
+export function AppButton({
   children,
   loading = false,
   loadingText,
   disabled,
   className,
   ...props
-}: FormButtonProps) {
+}: AppButtonProps) {
   const isDisabled = disabled || loading;
 
   return (
