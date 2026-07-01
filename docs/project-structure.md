@@ -181,6 +181,32 @@ src/app/(public)/entrar/
 | `common/hooks/`                | Hooks reutilizáveis                                              |
 | `common/lib/`                  | Utilitários (`cn`, formatters, etc.)                             |
 
+## Componente Page (padrão de layout de páginas)
+
+Todas as páginas da área privada devem usar o componente `Page` com composition pattern para padronizar o layout.
+
+```tsx
+import { Page } from "@/common/components/page";
+
+export default function MinhaPage() {
+  return (
+    <Page.Root>
+      <Page.Header
+        title="Título"
+        description="Descrição opcional"
+        showBackButton
+        backHref="/rota-anterior"
+      >
+        {/* ações opcionais à direita */}
+      </Page.Header>
+      <Page.Content>{/* conteúdo */}</Page.Content>
+    </Page.Root>
+  );
+}
+```
+
+Veja a documentação completa em [page-component.md](./page-component.md).
+
 ## O que não fazer
 
 - Não criar `src/components/auth/` para código usado só em `/entrar` — use `_components`.
