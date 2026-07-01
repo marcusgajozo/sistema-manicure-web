@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from "@/common/components/shadcn-ui/card";
+import { Page } from "@/common/components/page";
+import { APP_ROUTES } from "@/common/lib/navigation/routes";
 
 export const metadata: Metadata = {
   title: "Novo agendamento",
@@ -13,16 +9,16 @@ export const metadata: Metadata = {
 
 export default function NovoAgendamentoPage() {
   return (
-    <Card>
-      <CardHeader>
-        <h1 className="font-heading text-base leading-snug font-medium">
-          Novo agendamento
-        </h1>
-        <CardDescription>Cadastre um novo agendamento.</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Page.Root>
+      <Page.Header
+        title="Novo agendamento"
+        description="Cadastre um novo agendamento."
+        showBackButton
+        backHref={APP_ROUTES.agendamentos.list}
+      />
+      <Page.Content>
         <p className="text-sm text-muted-foreground">Página em construção.</p>
-      </CardContent>
-    </Card>
+      </Page.Content>
+    </Page.Root>
   );
 }

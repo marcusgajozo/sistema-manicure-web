@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { Page } from "@/common/components/page";
 import {
   Card,
   CardContent,
@@ -14,21 +15,21 @@ export const metadata: Metadata = {
 
 export default function DashboardPage() {
   return (
-    <Card>
-      <CardHeader>
-        <h1 className="font-heading text-base leading-snug font-medium">
-          Dashboard
-        </h1>
-        <CardDescription>
-          Bem-vinda ao sistema. Use o menu lateral para navegar.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground">
-          Em breve você verá aqui um resumo dos agendamentos e métricas do
-          salão.
-        </p>
-      </CardContent>
-    </Card>
+    <Page.Root>
+      <Page.Header title="Dashboard" description="Bem-vinda ao sistema." />
+      <Page.Content>
+        <Card>
+          <CardHeader>
+            <CardDescription>Use o menu lateral para navegar.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Em breve você verá aqui um resumo dos agendamentos e métricas do
+              salão.
+            </p>
+          </CardContent>
+        </Card>
+      </Page.Content>
+    </Page.Root>
   );
 }

@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from "@/common/components/shadcn-ui/card";
+import { Page } from "@/common/components/page";
 
 export const metadata: Metadata = {
   title: "Agendamentos",
@@ -13,16 +8,14 @@ export const metadata: Metadata = {
 
 export default function AgendamentosPage() {
   return (
-    <Card>
-      <CardHeader>
-        <h1 className="font-heading text-base leading-snug font-medium">
-          Agendamentos
-        </h1>
-        <CardDescription>Lista de agendamentos do salão.</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Page.Root>
+      <Page.Header
+        title="Agendamentos"
+        description="Lista de agendamentos do salão."
+      />
+      <Page.Content>
         <p className="text-sm text-muted-foreground">Página em construção.</p>
-      </CardContent>
-    </Card>
+      </Page.Content>
+    </Page.Root>
   );
 }

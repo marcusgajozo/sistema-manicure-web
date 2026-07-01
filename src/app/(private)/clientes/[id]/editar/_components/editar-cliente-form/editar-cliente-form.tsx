@@ -11,8 +11,6 @@ type EditarClienteFormProps = {
 export function EditarClienteForm({ client }: EditarClienteFormProps) {
   return (
     <ClientForm
-      title="Editar cliente"
-      description="Atualize o nome e o telefone do cliente."
       submitLabel="Salvar alterações"
       loadingText="Salvando..."
       defaultValues={{

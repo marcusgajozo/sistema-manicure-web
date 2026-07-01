@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from "@/common/components/shadcn-ui/card";
+import { Page } from "@/common/components/page";
 import { apiClient } from "@/common/services/api/server-client";
 
 import { ClientsTable, ClientsTableActions } from "./_components/clients-table";
@@ -69,19 +64,16 @@ export default async function ClientesPage({
   }));
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-start justify-between gap-4">
-        <div className="flex flex-col gap-1.5">
-          <h1 className="font-heading text-base leading-snug font-medium">
-            Clientes
-          </h1>
-          <CardDescription>Gerencie os clientes do salão.</CardDescription>
-        </div>
+    <Page.Root>
+      <Page.Header
+        title="Clientes"
+        description="Gerencie os clientes do salão."
+      >
         <ClientsTableActions />
-      </CardHeader>
-      <CardContent>
+      </Page.Header>
+      <Page.Content>
         <ClientsTable data={rows} meta={meta} />
-      </CardContent>
-    </Card>
+      </Page.Content>
+    </Page.Root>
   );
 }
