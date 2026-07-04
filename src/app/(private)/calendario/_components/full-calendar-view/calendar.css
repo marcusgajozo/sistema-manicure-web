@@ -1,34 +1,46 @@
 /* Custom FullCalendar overrides to match Shadcn UI design system */
 .fc {
   --fc-page-bg-color: transparent;
-  --fc-neutral-bg-color: hsl(var(--muted));
-  --fc-neutral-text-color: hsl(var(--muted-foreground));
-  --fc-border-color: hsl(var(--foreground) / 0.15); /* More visible border */
+  --fc-neutral-bg-color: var(--color-muted);
+  --fc-neutral-text-color: var(--color-muted-foreground);
+  --fc-border-color: var(--color-border); /* Use standard border color */
 
-  --fc-button-text-color: hsl(var(--foreground));
-  --fc-button-bg-color: hsl(var(--background));
-  --fc-button-border-color: hsl(var(--input));
-  --fc-button-hover-bg-color: hsl(var(--accent));
-  --fc-button-hover-border-color: hsl(var(--input));
-  --fc-button-active-bg-color: hsl(var(--accent));
-  --fc-button-active-border-color: hsl(var(--input));
+  --fc-button-text-color: var(--color-foreground);
+  --fc-button-bg-color: var(--color-background);
+  --fc-button-border-color: var(--color-input);
+  --fc-button-hover-bg-color: var(--color-accent);
+  --fc-button-hover-border-color: var(--color-input);
+  --fc-button-active-bg-color: var(--color-accent);
+  --fc-button-active-border-color: var(--color-input);
 
-  --fc-event-bg-color: hsl(var(--primary));
-  --fc-event-border-color: hsl(var(--primary));
-  --fc-event-text-color: hsl(var(--primary-foreground));
+  --fc-event-bg-color: var(--color-primary);
+  --fc-event-border-color: var(--color-primary);
+  --fc-event-text-color: var(--color-primary-foreground);
   --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
 
-  --fc-more-link-bg-color: hsl(var(--muted));
-  --fc-more-link-text-color: hsl(var(--muted-foreground));
+  --fc-more-link-bg-color: var(--color-muted);
+  --fc-more-link-text-color: var(--color-muted-foreground);
 
-  --fc-non-business-color: hsl(var(--muted) / 0.5);
-  --fc-bg-event-color: hsl(var(--primary) / 0.1);
+  --fc-non-business-color: color-mix(
+    in srgb,
+    var(--color-muted) 50%,
+    transparent
+  );
+  --fc-bg-event-color: color-mix(
+    in srgb,
+    var(--color-primary) 10%,
+    transparent
+  );
   --fc-bg-event-opacity: 1;
 
-  --fc-highlight-color: hsl(var(--accent) / 0.5);
+  --fc-highlight-color: color-mix(
+    in srgb,
+    var(--color-accent) 50%,
+    transparent
+  );
 
-  --fc-today-bg-color: hsl(var(--accent) / 0.2);
-  --fc-now-indicator-color: hsl(var(--destructive));
+  --fc-today-bg-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  --fc-now-indicator-color: var(--color-destructive);
 
   font-family: inherit;
 }
@@ -39,19 +51,19 @@
   text-transform: capitalize;
   font-weight: 500;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  transition: colors 150ms ease;
+  transition: all 150ms ease;
 }
 
 .fc .fc-button-primary:focus {
   box-shadow:
-    0 0 0 2px hsl(var(--background)),
-    0 0 0 4px hsl(var(--ring));
+    0 0 0 2px var(--color-background),
+    0 0 0 4px var(--color-ring);
 }
 
 .fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:not(:disabled):active {
-  background-color: hsl(var(--accent));
-  color: hsl(var(--accent-foreground));
+  background-color: var(--color-accent);
+  color: var(--color-accent-foreground);
 }
 
 /* Toolbar Title */
@@ -66,7 +78,7 @@
 .fc .fc-col-header-cell-cushion {
   padding: 0.5rem;
   font-weight: 500;
-  color: hsl(var(--muted-foreground));
+  color: var(--color-muted-foreground);
 }
 
 /* Events */
@@ -99,30 +111,52 @@
   background: transparent;
 }
 .fc-scroller::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
+  background: color-mix(
+    in srgb,
+    var(--color-muted-foreground) 30%,
+    transparent
+  );
   border-radius: 4px;
 }
 .fc-scroller::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+  background: color-mix(
+    in srgb,
+    var(--color-muted-foreground) 50%,
+    transparent
+  );
 }
 
-/* Make day division lines more prominent */
+/* Google Calendar Style Grid Lines */
 .fc table {
   border-collapse: collapse !important;
 }
 
-.fc td,
-.fc th,
-.fc-scrollgrid {
-  border: 1px solid hsl(var(--foreground) / 0.15) !important;
+.fc-theme-standard td,
+.fc-theme-standard th,
+.fc-theme-standard .fc-scrollgrid {
+  border-color: var(--color-border) !important;
 }
 
+/* Vertical lines dividing days */
 .fc .fc-timegrid-col,
+.fc .fc-col-header-cell,
 .fc .fc-daygrid-day {
-  border: 1px solid hsl(var(--foreground) / 0.15) !important;
+  border-left: 1px solid var(--color-border) !important;
+  border-right: 1px solid var(--color-border) !important;
 }
 
+/* Day grid (Month view) specific borders to ensure they show */
+.fc .fc-daygrid-day-frame {
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+/* Horizontal lines for slots (hours) */
+.fc .fc-timegrid-slot-lane {
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+/* Minor slots (half hours) */
 .fc .fc-timegrid-slot-minor {
-  border-top-style: dotted !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
+  border-top: 1px dotted
+    color-mix(in srgb, var(--color-border) 60%, transparent) !important;
 }

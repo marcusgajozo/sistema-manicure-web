@@ -12,6 +12,8 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { Select } from "@/common/components/select/select";
+
 import { getCalendarEventsAction } from "../../_actions/get-calendar-events";
 import { EventModal } from "../event-modal";
 
@@ -27,6 +29,21 @@ export function FullCalendarView({
   const [events, setEvents] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
   const calendarRef = useRef<FullCalendar>(null);
+
+  const [currentView, setCurrentView] = useState("dayGridMonth");
+  const viewOptions = [
+    { label: "Mês", value: "dayGridMonth" },
+    { label: "Semana", value: "timeGridWeek" },
+    { label: "Dia", value: "timeGridDay" },
+    { label: "Lista", value: "listWeek" },
+  ];
+
+  const handleViewChange = (newView: string) => {
+    setCurrentView(newView);
+    if (calendarRef.current) {
+      calendarRef.current.getApi().changeView(newView);
+    }
+  };
 
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
@@ -66,7 +83,18 @@ export function FullCalendarView({
           </div>
         </div>
       )}
-      <div className="flex-1 w-full h-[calc(100vh-12rem)] min-h-[600px] overflow-hidden">
+
+      {/* Custom View Selector overlapping the right side of the FullCalendar Toolbar */}
+      <div className="absolute right-4 top-4 z-10 w-36 hidden sm:block">
+        <Select
+          options={viewOptions}
+          value={currentView}
+          onChange={handleViewChange}
+          placeholder="Visualização"
+        />
+      </div>
+
+      <div className="flex-1 w-full h-[calc(100vh-12rem)] min-h-[600px] overflow-hidden relative">
         <FullCalendar
           ref={calendarRef}
           plugins={[
@@ -75,11 +103,12 @@ export function FullCalendarView({
             interactionPlugin,
             listPlugin,
           ]}
-          initialView="timeGridWeek"
+          initialView={currentView}
           headerToolbar={{
             left: "prev,next today",
             center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+            right:
+              "" /* empty right toolbar to leave space for our custom select */,
           }}
           locale={ptBrLocale}
           events={events as any}
