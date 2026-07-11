@@ -28,6 +28,9 @@ export default async function ClientesPage({
     queryParams: { page, limit },
   });
 
+  // TODO: criar uma page 404
+  // TODO: criar um skeleton para carregamento de pages no sistema
+
   const data = response.data ?? [];
   const meta = response.meta;
 
