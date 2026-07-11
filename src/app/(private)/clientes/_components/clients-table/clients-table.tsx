@@ -9,16 +9,14 @@ import {
 } from "@/common/components/paginated-list";
 import { Button } from "@/common/components/shadcn-ui/button";
 import { APP_ROUTES } from "@/common/lib/navigation/routes";
-import type { Client } from "@/common/services/api/clients/schemas";
-import type { PaginationMeta } from "@/common/services/api/shared/schemas/pagination-meta";
+import type {
+  Client,
+  GetClientsPaginatedResponse,
+} from "@/common/services/api/clients/schemas";
 
-import { ClientRowActions } from "../client-row-actions";
+import { ClientRowActions } from "./client-row-actions";
 
-export type ClientTableRow = Client & {
-  createdAtLabel: string;
-};
-
-const dataColumns: DataTableColumn<ClientTableRow>[] = [
+const columns: DataTableColumn<Client>[] = [
   {
     id: "name",
     header: "Nome",
@@ -32,12 +30,8 @@ const dataColumns: DataTableColumn<ClientTableRow>[] = [
   {
     id: "createdAt",
     header: "Cadastro",
-    cell: (client) => client.createdAtLabel,
+    cell: (client) => client.createdAt,
   },
-];
-
-const columns: DataTableColumn<ClientTableRow>[] = [
-  ...dataColumns,
   {
     id: "actions",
     header: "Ações",
@@ -47,8 +41,8 @@ const columns: DataTableColumn<ClientTableRow>[] = [
 ];
 
 type ClientsTableProps = {
-  data: ClientTableRow[];
-  meta: PaginationMeta;
+  data: GetClientsPaginatedResponse["data"];
+  meta: GetClientsPaginatedResponse["meta"];
 };
 
 export function ClientsTable({ data, meta }: ClientsTableProps) {
@@ -61,7 +55,7 @@ export function ClientsTable({ data, meta }: ClientsTableProps) {
       emptyMessage="Nenhum cliente cadastrado."
       renderCard={(client) => (
         <div className="flex flex-col gap-3">
-          <PaginatedListDefaultCard row={client} columns={dataColumns} />
+          <PaginatedListDefaultCard row={client} columns={columns} />
           <ClientRowActions client={client} />
         </div>
       )}

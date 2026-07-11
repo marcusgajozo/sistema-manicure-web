@@ -6,7 +6,7 @@ import { apiErrorSchema } from "../shared/schemas/api-error";
 import {
   createClientDtoSchema,
   getClientResponseSchema,
-  getClientsResponseSchema,
+  getClientsPaginatedResponseSchema,
   updateClientDtoSchema,
 } from "./schemas";
 
@@ -18,7 +18,7 @@ export const clientsRoutes = defineApiRoutes({
         errorSchema: apiErrorSchema,
       },
       get: {
-        responseSchema: getClientsResponseSchema,
+        responseSchema: getClientsPaginatedResponseSchema,
         errorSchema: apiErrorSchema,
       },
     },

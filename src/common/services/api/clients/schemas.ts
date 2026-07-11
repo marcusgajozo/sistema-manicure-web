@@ -22,7 +22,7 @@ export const clientSchema = z.object({
   userId: z.uuid(),
 });
 
-export const getClientsResponseSchema =
+export const getClientsPaginatedResponseSchema =
   createPaginatedResponseSchema(clientSchema);
 
 export const getClientResponseSchema = z.object({
@@ -30,5 +30,7 @@ export const getClientResponseSchema = z.object({
 });
 
 export type Client = z.infer<typeof clientSchema>;
-export type GetClientsResponse = z.infer<typeof getClientsResponseSchema>;
+export type GetClientsPaginatedResponse = z.infer<
+  typeof getClientsPaginatedResponseSchema
+>;
 export type GetClientResponse = z.infer<typeof getClientResponseSchema>;
