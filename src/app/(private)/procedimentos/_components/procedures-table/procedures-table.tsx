@@ -1,9 +1,9 @@
 "use client";
 
+import { type ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
 import {
-  type DataTableColumn,
   PaginatedList,
   PaginatedListDefaultCard,
 } from "@/common/components/paginated-list";
@@ -19,36 +19,37 @@ export type ProcedureTableRow = Procedure & {
   durationLabel: string;
 };
 
-const dataColumns: DataTableColumn<ProcedureTableRow>[] = [
+const dataColumns: ColumnDef<ProcedureTableRow>[] = [
   {
-    id: "name",
+    accessorKey: "name",
     header: "Nome",
-    cell: (procedure) => procedure.name,
   },
   {
     id: "price",
     header: "Preço",
-    cell: (procedure) => procedure.priceLabel,
+    cell: ({ row }) => row.original.priceLabel,
   },
   {
     id: "durationMinutes",
     header: "Duração",
-    cell: (procedure) => procedure.durationLabel,
+    cell: ({ row }) => row.original.durationLabel,
   },
   {
     id: "returnDays",
     header: "Retorno",
-    cell: (procedure) => `${procedure.returnDays} dias`,
+    cell: ({ row }) => `${row.original.returnDays} dias`,
   },
 ];
 
-const columns: DataTableColumn<ProcedureTableRow>[] = [
+const columns: ColumnDef<ProcedureTableRow>[] = [
   ...dataColumns,
   {
     id: "actions",
     header: "Ações",
-    className: "w-[1%] text-right",
-    cell: (procedure) => <ProcedureRowActions procedure={procedure} />,
+    meta: {
+      className: "w-[1%] text-right",
+    },
+    cell: ({ row }) => <ProcedureRowActions procedure={row.original} />,
   },
 ];
 
@@ -63,12 +64,11 @@ export function ProceduresTable({ data, meta }: ProceduresTableProps) {
       columns={columns}
       data={data}
       meta={meta}
-      getRowKey={(procedure) => procedure.id}
       emptyMessage="Nenhum procedimento cadastrado."
-      renderCard={(procedure) => (
+      renderCard={(row) => (
         <div className="flex flex-col gap-3">
-          <PaginatedListDefaultCard row={procedure} columns={dataColumns} />
-          <ProcedureRowActions procedure={procedure} />
+          <PaginatedListDefaultCard row={row} />
+          <ProcedureRowActions procedure={row.original} />
         </div>
       )}
     />

@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  type ColumnDef,
+  getCoreRowModel,
+  type Row,
+  useReactTable,
+} from "@tanstack/react-table";
 import { type ReactNode, Suspense } from "react";
 
 import { PaginationControls } from "@/common/components/pagination-controls";
@@ -7,51 +13,56 @@ import { cn } from "@/common/lib/utils";
 import type { PaginationMeta } from "@/common/services/api/shared/schemas/pagination-meta";
 
 import { DataTableBody } from "../data-table/data-table-body";
-import type { DataTableColumn } from "../data-table/data-table-types";
 import { PaginatedListDefaultCard } from "./paginated-list-default-card";
 
-type PaginatedListProps<T> = {
-  columns: DataTableColumn<T>[];
-  data: T[];
+type PaginatedListProps<TData, TValue> = {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
   meta: PaginationMeta;
-  getRowKey?: (row: T, index: number) => string | number;
-  renderCard?: (row: T) => ReactNode;
+  renderCard?: (row: Row<TData>) => ReactNode;
   emptyMessage?: string;
   className?: string;
 };
 
-export function PaginatedList<T>({
+export function PaginatedList<TData, TValue>({
   columns,
   data,
   meta,
-  getRowKey,
   renderCard,
   emptyMessage = "Nenhum registro encontrado.",
   className,
-}: PaginatedListProps<T>) {
+}: PaginatedListProps<TData, TValue>) {
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  const rows = table.getRowModel().rows;
+
   return (
     <div className={cn("flex flex-col gap-4", className)}>
       <div className="hidden md:block">
         <DataTableBody
-          columns={columns}
-          data={data}
-          getRowKey={getRowKey}
+          table={table}
+          columnsCount={columns.length}
           emptyMessage={emptyMessage}
         />
       </div>
 
       <div className="flex flex-col gap-3 md:hidden">
-        {data.length === 0 ? (
+        {rows.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">
             {emptyMessage}
           </p>
         ) : (
-          data.map((row, rowIndex) => (
-            <div key={getRowKey?.(row, rowIndex) ?? rowIndex}>
+          rows.map((row) => (
+            <div key={row.id}>
               {renderCard ? (
                 renderCard(row)
               ) : (
-                <PaginatedListDefaultCard row={row} columns={columns} />
+                <PaginatedListDefaultCard row={row} />
               )}
             </div>
           ))

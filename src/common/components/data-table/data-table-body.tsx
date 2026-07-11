@@ -1,3 +1,5 @@
+import { flexRender, type Table as TanstackTable } from "@tanstack/react-table";
+
 import {
   Table,
   TableBody,
@@ -7,54 +9,76 @@ import {
   TableRow,
 } from "@/common/components/shadcn-ui/table";
 
-import type { DataTableColumn } from "./data-table-types";
-
-type DataTableBodyProps<T> = {
-  columns: DataTableColumn<T>[];
-  data: T[];
-  getRowKey?: (row: T, index: number) => string | number;
+type DataTableBodyProps<TData> = {
+  table: TanstackTable<TData>;
+  columnsCount: number;
   emptyMessage?: string;
 };
 
-export function DataTableBody<T>({
-  columns,
-  data,
-  getRowKey,
+export function DataTableBody<TData>({
+  table,
+  columnsCount,
   emptyMessage = "Nenhum registro encontrado.",
-}: DataTableBodyProps<T>) {
+}: DataTableBodyProps<TData>) {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          {columns.map((column) => (
-            <TableHead key={column.id} className={column.className}>
-              {column.header}
-            </TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.length === 0 ? (
-          <TableRow>
-            <TableCell
-              colSpan={columns.length}
-              className="h-24 text-center text-muted-foreground"
-            >
-              {emptyMessage}
-            </TableCell>
-          </TableRow>
-        ) : (
-          data.map((row, rowIndex) => (
-            <TableRow key={getRowKey?.(row, rowIndex) ?? rowIndex}>
-              {columns.map((column) => (
-                <TableCell key={column.id} className={column.className}>
-                  {column.cell(row)}
-                </TableCell>
-              ))}
+    <div className="overflow-hidden rounded-md border">
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead
+                    key={header.id}
+                    className={
+                      (header.column.columnDef.meta as Record<string, unknown>)
+                        ?.className as string | undefined
+                    }
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
             </TableRow>
-          ))
-        )}
-      </TableBody>
-    </Table>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className={
+                      (cell.column.columnDef.meta as Record<string, unknown>)
+                        ?.className as string | undefined
+                    }
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={columnsCount}
+                className="h-24 text-center text-muted-foreground"
+              >
+                {emptyMessage}
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

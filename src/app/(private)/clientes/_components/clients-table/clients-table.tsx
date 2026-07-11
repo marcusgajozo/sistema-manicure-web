@@ -1,9 +1,9 @@
 "use client";
 
+import { type ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
 import {
-  type DataTableColumn,
   PaginatedList,
   PaginatedListDefaultCard,
 } from "@/common/components/paginated-list";
@@ -16,27 +16,26 @@ import type {
 
 import { ClientRowActions } from "./client-row-actions";
 
-const columns: DataTableColumn<Client>[] = [
+const columns: ColumnDef<Client>[] = [
   {
-    id: "name",
+    accessorKey: "name",
     header: "Nome",
-    cell: (client) => client.name,
   },
   {
-    id: "phone",
+    accessorKey: "phone",
     header: "Telefone",
-    cell: (client) => client.phone,
   },
   {
-    id: "createdAt",
+    accessorKey: "createdAt",
     header: "Cadastro",
-    cell: (client) => client.createdAt,
   },
   {
     id: "actions",
     header: "Ações",
-    className: "w-[1%] text-right",
-    cell: (client) => <ClientRowActions client={client} />,
+    meta: {
+      className: "w-[1%] text-right",
+    },
+    cell: ({ row }) => <ClientRowActions client={row.original} />,
   },
 ];
 
@@ -51,12 +50,11 @@ export function ClientsTable({ data, meta }: ClientsTableProps) {
       columns={columns}
       data={data}
       meta={meta}
-      getRowKey={(client) => client.id}
       emptyMessage="Nenhum cliente cadastrado."
-      renderCard={(client) => (
+      renderCard={(row) => (
         <div className="flex flex-col gap-3">
-          <PaginatedListDefaultCard row={client} columns={columns} />
-          <ClientRowActions client={client} />
+          <PaginatedListDefaultCard row={row} />
+          <ClientRowActions client={row.original} />
         </div>
       )}
     />
