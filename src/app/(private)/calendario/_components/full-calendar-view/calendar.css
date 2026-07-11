@@ -160,3 +160,29 @@
   border-top: 1px dotted
     color-mix(in srgb, var(--color-border) 60%, transparent) !important;
 }
+
+/* Center day numbers in month view */
+.fc .fc-daygrid-day-top {
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+/* Circle background for current day number */
+.fc .fc-day-today .fc-daygrid-day-number {
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* Also style the current day header in week/day view */
+.fc .fc-col-header-cell.fc-day-today .fc-col-header-cell-cushion {
+  color: var(--color-primary);
+  font-weight: 700;
+}
