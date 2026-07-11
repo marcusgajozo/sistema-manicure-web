@@ -11,6 +11,7 @@ type PaginatedListDefaultCardProps<TData> = {
   row: Row<TData>;
 };
 
+// TODO: cria um componente chamado de data-card parecido com data-table
 export function PaginatedListDefaultCard<TData>({
   row,
 }: PaginatedListDefaultCardProps<TData>) {
