@@ -2,6 +2,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
+import reactCompiler from "eslint-plugin-react-compiler";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import unusedImports from "eslint-plugin-unused-imports";
 
@@ -12,6 +13,7 @@ const eslintConfig = defineConfig([
     plugins: {
       "simple-import-sort": simpleImportSort,
       "unused-imports": unusedImports,
+      "react-compiler": reactCompiler,
     },
     rules: {
       "no-console": ["warn", { allow: ["warn", "error"] }],
@@ -31,10 +33,11 @@ const eslintConfig = defineConfig([
       "no-warning-comments": [
         "warn",
         {
-          terms: ["todo", "fixme", "hack", "xxx"],
+          terms: ["fixme", "hack", "xxx"],
           location: "anywhere",
         },
       ],
+      "react-compiler/react-compiler": "error",
     },
   },
   eslintConfigPrettier,
@@ -45,6 +48,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "src/common/components/shadcn-ui/**",
   ]),
 ]);
 
