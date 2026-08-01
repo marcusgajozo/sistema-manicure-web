@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast, Toaster } from "sonner";
 
 import { consumeFlashToastAction } from "@/common/lib/toast/flash-toast-action";
@@ -13,11 +13,14 @@ type AppToasterProps = {
 export function AppToaster({ flashMessage = null }: AppToasterProps) {
   const pathname = usePathname();
 
+  const initialFlashMessage = useRef(flashMessage);
+
   useEffect(() => {
-    if (flashMessage) {
-      toast.error(flashMessage);
+    if (initialFlashMessage.current) {
+      toast.error(initialFlashMessage.current);
+      initialFlashMessage.current = null;
     }
-  }, [flashMessage]);
+  }, []);
 
   useEffect(() => {
     void consumeFlashToastAction().then((message) => {
