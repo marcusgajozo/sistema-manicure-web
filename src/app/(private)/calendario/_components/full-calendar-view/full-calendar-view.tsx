@@ -149,7 +149,11 @@ export function FullCalendarView({
           }}
           eventClick={(info) => {
             const ext = info.event.extendedProps;
-            if (ext.type === "appointment" || ext.type === "time-off") {
+            if (
+              ext.type === "appointment" ||
+              ext.type === "time-off" ||
+              ext.type === "notification"
+            ) {
               setModalState({
                 isOpen: true,
                 mode: "edit",

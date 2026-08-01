@@ -10,4 +10,11 @@ export const notificationsRoutes = defineApiRoutes({
       },
     },
   },
+  "/notification-templates": {
+    methods: {
+      get: {
+        errorSchema: apiErrorSchema,
+      },
+    },
+  },
 });

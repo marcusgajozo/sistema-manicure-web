@@ -2,6 +2,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -22,13 +24,13 @@ type EventModalProps = {
   onOpenChange: (open: boolean) => void;
   modalState: {
     mode: "create" | "edit";
-    eventType: "appointment" | "time-off" | "select-type";
+    eventType: "appointment" | "time-off" | "select-type" | "notification";
     initialData: Record<string, unknown> | null;
   };
   setModalState: (state: {
     isOpen: boolean;
     mode: "create" | "edit";
-    eventType: "appointment" | "time-off" | "select-type";
+    eventType: "appointment" | "time-off" | "select-type" | "notification";
     initialData: Record<string, unknown> | null;
   }) => void;
   onSuccess: () => void;
@@ -57,6 +59,7 @@ export function EventModal({
               (isCreate ? "Nova Ausência" : "Editar Ausência")}
             {modalState.eventType === "appointment" &&
               (isCreate ? "Novo Agendamento" : "Editar Agendamento")}
+            {modalState.eventType === "notification" && "Enviar Notificação"}
           </Modal.Title>
           <Modal.Description>
             {modalState.eventType === "select-type" &&
@@ -110,6 +113,16 @@ export function EventModal({
             initialData={modalState.initialData}
             clients={clients}
             procedures={procedures}
+            onSuccess={() => {
+              onSuccess();
+              onOpenChange(false);
+            }}
+          />
+        )}
+
+        {modalState.eventType === "notification" && (
+          <NotificationForm
+            initialData={modalState.initialData}
             onSuccess={() => {
               onSuccess();
               onOpenChange(false);
@@ -422,5 +435,95 @@ function AppointmentForm({
         </AppButton>
       </Modal.Footer>
     </form>
+  );
+}
+
+// --- Notification Form ---
+
+function NotificationForm({
+  initialData,
+  onSuccess,
+}: {
+  initialData: Record<string, unknown> | null;
+  onSuccess: () => void;
+}) {
+  const [template, setTemplate] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadTemplates() {
+      const { getNotificationTemplatesAction } =
+        await import("../../_actions/get-notification-templates");
+      const res = await getNotificationTemplatesAction();
+      const templates = (res as any).data || [];
+      const type = (initialData as any)?.type || "REMINDER";
+      const matched = templates.find((t: any) => t.type === type);
+      setTemplate(matched);
+      setLoading(false);
+    }
+    void loadTemplates();
+  }, [initialData]);
+
+  if (loading) {
+    return (
+      <div className="p-4 text-center text-sm text-muted-foreground animate-pulse">
+        Carregando template...
+      </div>
+    );
+  }
+
+  if (!template) {
+    return (
+      <div className="p-4 text-center text-sm text-muted-foreground">
+        Template não encontrado para este tipo de notificação.
+      </div>
+    );
+  }
+
+  const appointment = (initialData as any)?.appointment || initialData;
+  const clientName = appointment?.clientName || "Cliente";
+  const dateStr = appointment?.startDate
+    ? format(new Date(appointment.startDate), "dd/MM/yyyy")
+    : "";
+  const timeStr = appointment?.startDate
+    ? format(new Date(appointment.startDate), "HH:mm")
+    : "";
+  const procedureName = appointment?.procedureName || "";
+  const procedurePrice = appointment?.procedurePrice || "";
+  const phoneClient = appointment?.phoneClient || "";
+
+  let message = template.content || "";
+  message = message.replace(/{{clientName}}/g, clientName);
+  message = message.replace(/{{time}}/g, timeStr);
+  message = message.replace(/{{date}}/g, dateStr);
+  message = message.replace(/{{procedureName}}/g, procedureName);
+  message = message.replace(/{{procedurePrice}}/g, String(procedurePrice));
+
+  let phoneStr = String(phoneClient).replace(/\D/g, "");
+  if (phoneStr && !phoneStr.startsWith("55") && phoneStr.length <= 11) {
+    phoneStr = "55" + phoneStr;
+  }
+  const waLink = `https://wa.me/${phoneStr}?text=${encodeURIComponent(message)}`;
+
+  return (
+    <div className="flex flex-col gap-4 py-4">
+      <div className="bg-muted p-4 rounded-md text-sm whitespace-pre-wrap">
+        {message}
+      </div>
+      <div className="flex justify-end gap-2 mt-4">
+        <Modal.Close render={<AppButton type="button" variant="outline" />}>
+          Cancelar
+        </Modal.Close>
+        <AppButton
+          onClick={() => {
+            window.open(waLink, "_blank");
+            onSuccess();
+          }}
+          disabled={!phoneStr}
+        >
+          Notificar no WhatsApp
+        </AppButton>
+      </div>
+    </div>
   );
 }
