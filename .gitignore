@@ -2,6 +2,8 @@
 
 !.husky
 !.husky/**/*
+!.devcontainer
+!.devcontainer/**/*
 !docs
 !docs/**/*
 !public
