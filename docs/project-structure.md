@@ -100,6 +100,8 @@ nome-do-componente/
 export { LoginForm } from "./login-form";
 ```
 
+> **Nota:** Esse padrão deve ser seguido **estritamente**, mesmo para subcomponentes agrupados ou modais (ex: dentro de `_components/event-modals/`). Cada componente (ex: `time-off-modal`) deve ter sua própria pasta isolada contendo seu arquivo `.tsx` e o `index.ts`.
+
 **Feature (`_components`):**
 
 ```
