@@ -20,14 +20,18 @@ import { EventModal } from "../event-modal";
 type Option = { label: string; value: string };
 
 export function FullCalendarView({
-  clients,
-  procedures,
+  clients = [],
+  procedures = [],
 }: {
-  clients: Option[];
-  procedures: Option[];
-}) {
+  clients?: Option[];
+  procedures?: Option[];
+} = {}) {
   const [events, setEvents] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentDateRange, setCurrentDateRange] = useState<{
+    startStr: string;
+    endStr: string;
+  } | null>(null);
   const calendarRef = useRef<FullCalendar>(null);
 
   const [currentView, setCurrentView] = useState("dayGridMonth");
@@ -58,21 +62,27 @@ export function FullCalendarView({
   });
 
   const fetchEvents = useCallback(async () => {
+    if (!currentDateRange) return;
     setLoading(true);
     try {
-      const data = await getCalendarEventsAction();
+      const data = await getCalendarEventsAction({
+        startDate: currentDateRange.startStr,
+        endDate: currentDateRange.endStr,
+      });
       setEvents(data);
     } catch (error) {
       console.error("Failed to load calendar events:", error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [currentDateRange]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void fetchEvents();
-  }, [fetchEvents]);
+    if (currentDateRange) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void fetchEvents();
+    }
+  }, [fetchEvents, currentDateRange]);
 
   return (
     <div className="flex h-full w-full flex-col bg-card rounded-xl border shadow-sm p-4 relative">
@@ -112,6 +122,12 @@ export function FullCalendarView({
           }}
           locale={ptBrLocale}
           events={events as any}
+          datesSet={(info) => {
+            setCurrentDateRange({
+              startStr: info.startStr,
+              endStr: info.endStr,
+            });
+          }}
           allDaySlot={false}
           slotMinTime="06:00:00"
           slotMaxTime="22:00:00"

@@ -2,14 +2,29 @@
 
 import { apiClient } from "@/common/services/api/server-client";
 
-export async function getCalendarEventsAction() {
-  const [appointmentsRes, timeOffsRes, schedulesRes] = await Promise.all([
-    apiClient.callRoute("/appointments", { method: "get" }).catch(() => null),
-    apiClient.callRoute("/time-offs", { method: "get" }).catch(() => null),
-    apiClient
-      .callRoute("/schedule-templates", { method: "get" })
-      .catch(() => null),
-  ]);
+export async function getCalendarEventsAction(params?: {
+  startDate?: string;
+  endDate?: string;
+}) {
+  const queryParams: Record<string, string | number> = { limit: 1000 };
+  if (params?.startDate) queryParams.startDate = params.startDate;
+  if (params?.endDate) queryParams.endDate = params.endDate;
+
+  const [appointmentsRes, timeOffsRes, schedulesRes, notificationsRes] =
+    await Promise.all([
+      apiClient
+        .callRoute("/appointments", { method: "get", queryParams })
+        .catch(() => null),
+      apiClient
+        .callRoute("/time-offs", { method: "get", queryParams })
+        .catch(() => null),
+      apiClient
+        .callRoute("/schedule-templates", { method: "get" })
+        .catch(() => null),
+      apiClient
+        .callRoute("/notifications", { method: "get", queryParams })
+        .catch(() => null),
+    ]);
 
   const appointments = (appointmentsRes as { data?: unknown })?.data
     ? ((appointmentsRes as { data: unknown }).data as Array<{
@@ -39,6 +54,18 @@ export async function getCalendarEventsAction() {
       }>)
     : [];
 
+  const notifications = (notificationsRes as { data?: unknown })?.data
+    ? ((notificationsRes as { data: unknown }).data as Array<{
+        id: string;
+        type?: string;
+        startDate?: string;
+        endDate?: string;
+        sendDate?: string;
+        createdAt?: string;
+        date?: string;
+      }>)
+    : [];
+
   const events = [];
 
   // Appointments (green)
@@ -64,6 +91,24 @@ export async function getCalendarEventsAction() {
       backgroundColor: "#ef4444", // Red 500
       borderColor: "#dc2626",
       extendedProps: { type: "time-off", data: to },
+    });
+  }
+
+  // Notifications (blue/orange depending on type, or default orange)
+  for (const notif of notifications) {
+    events.push({
+      id: `notif-${notif.id}`,
+      title: `Notificação${notif.type ? ` - ${notif.type}` : ""}`,
+      start: notif.startDate || notif.sendDate || notif.createdAt || notif.date,
+      end:
+        notif.endDate ||
+        notif.startDate ||
+        notif.sendDate ||
+        notif.createdAt ||
+        notif.date,
+      backgroundColor: "#f59e0b", // Amber 500
+      borderColor: "#d97706",
+      extendedProps: { type: "notification", data: notif },
     });
   }
 
