@@ -1,21 +1,25 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import "./calendar.css"; // Custom overrides
-import "./calendar.css"; // Custom overrides
+import "./calendar.css";
+import "./calendar.css";
 
+import { type EventInput } from "@fullcalendar/core";
 import ptBrLocale from "@fullcalendar/core/locales/pt-br";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
+import { useModal } from "@/common/components/modal";
 import { Select } from "@/common/components/select/select";
 
 import { getCalendarEventsAction } from "../../_actions/get-calendar-events";
-import { EventModal } from "../event-modal";
+import { AppointmentModal } from "../appointment-modal";
+import { NotificationModal } from "../notification-modal";
+import { SelectTypeModal } from "../select-type-modal";
+import { TimeOffModal } from "../time-off-modal";
 
 type Option = { label: string; value: string };
 
@@ -49,40 +53,30 @@ export function FullCalendarView({
     }
   };
 
-  const [modalState, setModalState] = useState<{
-    isOpen: boolean;
-    mode: "create" | "edit";
-    eventType: "appointment" | "time-off" | "select-type";
-    initialData: Record<string, unknown> | null;
-  }>({
-    isOpen: false,
-    mode: "create",
-    eventType: "select-type",
-    initialData: null,
-  });
+  const selectTypeModal = useModal("select-type-modal");
+  const appointmentModal = useModal("appointment-modal");
+  const timeOffModal = useModal("time-off-modal");
+  const notificationModal = useModal("notification-modal");
 
-  const fetchEvents = useCallback(async () => {
-    if (!currentDateRange) return;
-    setLoading(true);
-    try {
-      const data = await getCalendarEventsAction({
-        startDate: currentDateRange.startStr,
-        endDate: currentDateRange.endStr,
-      });
-      setEvents(data);
-    } catch (error) {
-      console.error("Failed to load calendar events:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [currentDateRange]);
-
-  useEffect(() => {
-    if (currentDateRange) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      void fetchEvents();
-    }
-  }, [fetchEvents, currentDateRange]);
+  const fetchEvents = useCallback(
+    async (rangeToFetch?: { startStr: string; endStr: string }) => {
+      const range = rangeToFetch || currentDateRange;
+      if (!range) return;
+      setLoading(true);
+      try {
+        const data = await getCalendarEventsAction({
+          startDate: range.startStr,
+          endDate: range.endStr,
+        });
+        setEvents(data);
+      } catch (error) {
+        console.error("Failed to load calendar events:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [currentDateRange],
+  );
 
   return (
     <div className="flex h-full w-full flex-col bg-card rounded-xl border shadow-sm p-4 relative">
@@ -94,7 +88,6 @@ export function FullCalendarView({
         </div>
       )}
 
-      {/* Custom View Selector overlapping the right side of the FullCalendar Toolbar */}
       <div className="absolute right-4 top-4 z-10 w-36 hidden sm:block">
         <Select
           options={viewOptions}
@@ -117,16 +110,19 @@ export function FullCalendarView({
           headerToolbar={{
             left: "prev,next today",
             center: "title",
-            right:
-              "" /* empty right toolbar to leave space for our custom select */,
+            right: "",
           }}
           locale={ptBrLocale}
-          events={events as any}
+          events={events as EventInput[]}
           datesSet={(info) => {
-            setCurrentDateRange({
+            const newRange = {
               startStr: info.startStr,
               endStr: info.endStr,
-            });
+            };
+            setCurrentDateRange(newRange);
+            setTimeout(() => {
+              void fetchEvents(newRange);
+            }, 0);
           }}
           allDaySlot={false}
           slotMinTime="06:00:00"
@@ -136,10 +132,7 @@ export function FullCalendarView({
           height="100%"
           selectable={true}
           select={(info) => {
-            setModalState({
-              isOpen: true,
-              mode: "create",
-              eventType: "select-type",
+            selectTypeModal.open({
               initialData: {
                 startDate: info.startStr,
                 endDate: info.endStr,
@@ -149,18 +142,27 @@ export function FullCalendarView({
           }}
           eventClick={(info) => {
             const ext = info.event.extendedProps;
-            if (
-              ext.type === "appointment" ||
-              ext.type === "time-off" ||
-              ext.type === "notification"
-            ) {
-              setModalState({
-                isOpen: true,
+            if (ext.type === "appointment") {
+              appointmentModal.open({
                 mode: "edit",
-                eventType: ext.type,
                 initialData: {
                   ...ext.data,
-                  id: ext.data.id, // ensure ID is passed
+                  id: ext.data.id,
+                },
+              });
+            } else if (ext.type === "time-off") {
+              timeOffModal.open({
+                mode: "edit",
+                initialData: {
+                  ...ext.data,
+                  id: ext.data.id,
+                },
+              });
+            } else if (ext.type === "notification") {
+              notificationModal.open({
+                initialData: {
+                  ...ext.data,
+                  id: ext.data.id,
                 },
               });
             }
@@ -168,16 +170,23 @@ export function FullCalendarView({
         />
       </div>
 
-      <EventModal
-        isOpen={modalState.isOpen}
-        onOpenChange={(open) => setModalState({ ...modalState, isOpen: open })}
-        modalState={modalState}
-        setModalState={setModalState}
+      <SelectTypeModal />
+      <AppointmentModal
         onSuccess={() => {
-          void fetchEvents(); // re-fetch after mutating
+          void fetchEvents();
         }}
         clients={clients}
         procedures={procedures}
+      />
+      <TimeOffModal
+        onSuccess={() => {
+          void fetchEvents();
+        }}
+      />
+      <NotificationModal
+        onSuccess={() => {
+          void fetchEvents();
+        }}
       />
     </div>
   );
