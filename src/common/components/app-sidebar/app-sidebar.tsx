@@ -31,18 +31,20 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
+  SidebarTrigger,
   useSidebar,
 } from "@/common/components/shadcn-ui/sidebar";
 import { signOutAction } from "@/common/lib/auth/sign-out";
-import { MENU_ITEMS } from "@/common/lib/navigation/menu-items";
+import { APP_ROUTES } from "@/common/lib/navigation/routes";
+
+import { MENU_ITEMS } from "./menu-items";
 import type {
   MenuAction,
   MenuGroup,
   MenuItem,
   MenuLeafItem,
   MenuLink,
-} from "@/common/lib/navigation/menu-types";
-import { APP_ROUTES } from "@/common/lib/navigation/routes";
+} from "./menu-types";
 
 function isPathActive(pathname: string, href: string) {
   if (href === APP_ROUTES.dashboard) {
@@ -219,17 +221,19 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
               render={<Link href={APP_ROUTES.dashboard} />}
               tooltip="Sistema Manicure"
               size="lg"
+              className="flex-1"
             >
               <span className="flex size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 SM
               </span>
               <span className="truncate font-semibold">Sistema Manicure</span>
             </SidebarMenuButton>
+            <SidebarTrigger />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
