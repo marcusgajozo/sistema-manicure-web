@@ -1,17 +1,25 @@
-import { Controller, useFormContext } from "react-hook-form";
+import {
+  type Control,
+  Controller,
+  type FieldPath,
+  type FieldValues,
+} from "react-hook-form";
 
 import { Select, type SelectProps } from "../select/select";
 
-export interface FormSelectProps extends Omit<
+export type FormSelectProps<TFieldValues extends FieldValues> = Omit<
   SelectProps,
   "value" | "onChange" | "name"
-> {
-  name: string;
-}
+> & {
+  name: FieldPath<TFieldValues>;
+  control: Control<TFieldValues>;
+};
 
-export function FormSelect({ name, ...props }: FormSelectProps) {
-  const { control } = useFormContext();
-
+export function FormSelect<TFieldValues extends FieldValues>({
+  name,
+  control,
+  ...props
+}: FormSelectProps<TFieldValues>) {
   return (
     <Controller
       name={name}
