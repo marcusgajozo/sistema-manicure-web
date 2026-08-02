@@ -13,3 +13,14 @@ export const updateTimeOffDtoSchema = z.object({
   endDate: z.iso.datetime().optional(),
   reason: z.string().optional(),
 });
+
+export const timeOffSchema = z.object({
+  id: z.string(),
+  reason: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+});
+
+export const timeOffsResponseSchema = z.object({
+  data: z.array(timeOffSchema),
+});
