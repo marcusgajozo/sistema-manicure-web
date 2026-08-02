@@ -13,7 +13,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { useCallback, useRef, useState } from "react";
 
 import { useModal } from "@/common/components/modal";
-import { Select } from "@/common/components/select/select";
+import { Select } from "@/common/components/select";
 
 import { getCalendarEventsAction } from "../../_actions/get-calendar-events";
 import { AppointmentModal } from "../appointment-modal";

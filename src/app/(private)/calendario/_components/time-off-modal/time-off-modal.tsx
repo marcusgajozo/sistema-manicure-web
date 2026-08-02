@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -29,11 +30,21 @@ export function TimeOffModal({ onSuccess }: { onSuccess: () => void }) {
   const form = useForm<TimeOffValues>({
     resolver: zodResolver(createTimeOffDtoSchema),
     defaultValues: {
-      startDate: data?.startDate || new Date().toISOString(),
-      endDate: data?.endDate || new Date().toISOString(),
-      reason: data?.reason || "",
+      startDate: "",
+      endDate: "",
+      reason: "",
     },
   });
+
+  useEffect(() => {
+    if (modal.isOpen) {
+      form.reset({
+        startDate: data?.startDate || new Date().toISOString(),
+        endDate: data?.endDate || new Date().toISOString(),
+        reason: data?.reason || "",
+      });
+    }
+  }, [modal.isOpen, data, form]);
 
   async function onSubmit(values: TimeOffValues) {
     if (isCreate) {
@@ -80,7 +91,7 @@ export function TimeOffModal({ onSuccess }: { onSuccess: () => void }) {
       open={modal.isOpen}
       onOpenChange={(open) => !open && modal.close()}
     >
-      <Modal.Popup className="sm:max-w-md">
+      <Modal.Popup className="w-full sm:max-w-md">
         <Modal.Title>
           {isCreate ? "Nova Ausência" : "Editar Ausência"}
         </Modal.Title>

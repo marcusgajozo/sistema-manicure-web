@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -8,8 +9,8 @@ import type { z } from "zod";
 import { AppButton } from "@/common/components/app-button";
 import { FormDatePicker } from "@/common/components/form-date-picker";
 import { FormInput } from "@/common/components/form-input";
-import { FormSelect } from "@/common/components/form-select";
 import { Modal, useModal } from "@/common/components/modal";
+import { FormSelect } from "@/common/components/select";
 import { FieldGroup } from "@/common/components/shadcn-ui/field";
 import { createAppointmentDtoSchema } from "@/common/services/api/appointments/schemas";
 
@@ -40,17 +41,33 @@ export function AppointmentModal({
   const form = useForm<AppointmentValues>({
     resolver: zodResolver(createAppointmentDtoSchema),
     defaultValues: {
-      clientId: data?.clientId || undefined,
-      clientName: data?.clientName || "",
-      phoneClient: data?.phoneClient || "",
-      procedureId: data?.procedureId || undefined,
-      procedureName: data?.procedureName || "",
-      procedurePrice: data?.procedurePrice || undefined,
-      procedureFollowUpDays: data?.procedureFollowUpDays || undefined,
-      startDate: data?.startDate || new Date().toISOString(),
-      endDate: data?.endDate || new Date().toISOString(),
+      clientId: undefined,
+      clientName: "",
+      phoneClient: "",
+      procedureId: undefined,
+      procedureName: "",
+      procedurePrice: undefined,
+      procedureFollowUpDays: undefined,
+      startDate: "",
+      endDate: "",
     },
   });
+
+  useEffect(() => {
+    if (modal.isOpen) {
+      form.reset({
+        clientId: data?.clientId || undefined,
+        clientName: data?.clientName || "",
+        phoneClient: data?.phoneClient || "",
+        procedureId: data?.procedureId || undefined,
+        procedureName: data?.procedureName || "",
+        procedurePrice: data?.procedurePrice || undefined,
+        procedureFollowUpDays: data?.procedureFollowUpDays || undefined,
+        startDate: data?.startDate || new Date().toISOString(),
+        endDate: data?.endDate || new Date().toISOString(),
+      });
+    }
+  }, [modal.isOpen, data, form]);
 
   const selectedClientId = useWatch({
     control: form.control,
@@ -106,7 +123,7 @@ export function AppointmentModal({
       open={modal.isOpen}
       onOpenChange={(open) => !open && modal.close()}
     >
-      <Modal.Popup className="sm:max-w-md">
+      <Modal.Popup className="w-full sm:max-w-md">
         <Modal.Title>
           {isCreate ? "Novo Agendamento" : "Editar Agendamento"}
         </Modal.Title>
@@ -121,17 +138,12 @@ export function AppointmentModal({
           <div className="flex-1 overflow-y-auto px-1 -mx-1 space-y-4">
             <FieldGroup>
               <FormSelect
-                control={
-                  form.control as unknown as React.ComponentProps<
-                    typeof FormInput
-                  >["control"]
-                }
+                control={form.control}
                 name="clientId"
                 label="Cliente Cadastrado"
                 options={clients}
                 placeholder="Selecione ou deixe em branco para avulso"
-                searchPlaceholder="Buscar cliente..."
-                emptyText="Nenhum cliente encontrado."
+                noOptionsMessage="Nenhum cliente encontrado."
               />
               {!selectedClientId && (
                 <div className="flex gap-4">
@@ -159,17 +171,12 @@ export function AppointmentModal({
               )}
 
               <FormSelect
-                control={
-                  form.control as unknown as React.ComponentProps<
-                    typeof FormInput
-                  >["control"]
-                }
+                control={form.control}
                 name="procedureId"
                 label="Serviço Cadastrado"
                 options={procedures}
                 placeholder="Selecione ou preencha manualmente"
-                searchPlaceholder="Buscar serviço..."
-                emptyText="Nenhum serviço encontrado."
+                noOptionsMessage="Nenhum serviço encontrado."
               />
               {!selectedProcedureId && (
                 <>
