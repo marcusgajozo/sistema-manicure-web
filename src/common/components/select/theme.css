@@ -1,0 +1,60 @@
+:root {
+  /* Cor Principal - Usada apenas para focus e variação no item selecionado */
+  --sl-primary-color: #ca3217;
+
+  /* Cores Base - Escala de Cinza para o restante do componente */
+  --sl-text-color: #111827; /* Gray 900 */
+
+  /* Tipografia */
+  --sl-font-family: system-ui, -apple-system, sans-serif;
+  --sl-font-size: 0.875rem;
+  --sl-label-size: var(--sl-font-size);
+  --sl-desc-size: 0.75rem;
+  --sl-error-size: 0.75rem;
+
+  /* Bordas */
+  --sl-border-color: #d1d5db; /* Gray 300 */
+  --sl-border-radius: 0.375rem;
+  --sl-border-width: 1px;
+
+  /* Focus (Usa a cor primária) */
+  --sl-focus-ring-color: var(--sl-primary-color);
+  --sl-focus-ring-width: 2px;
+
+  /* Trigger / Input Principal */
+  --sl-trigger-bg: #ffffff;
+  --sl-trigger-min-height: 2.5rem;
+  --sl-trigger-padding: 0.375rem 0.5rem;
+
+  /* Dropdown (Lista de opções) */
+  --sl-dropdown-bg: #ffffff;
+  --sl-dropdown-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --sl-dropdown-max-height: 16rem;
+  --sl-dropdown-z-index: 50;
+
+  /* Opções do Dropdown */
+  --sl-option-padding: 0.5rem 0.75rem;
+  --sl-option-hover-bg: #f3f4f6; /* Gray 100 - Escala de Cinza */
+
+  /* Item selecionado usa a cor primária diretamente */
+  --sl-option-selected-bg: var(--sl-primary-color);
+  --sl-option-selected-color: #ffffff; /* Texto branco para contraste */
+
+  --sl-option-focused-bg: #f3f4f6; /* Gray 100 - Escala de Cinza */
+  --sl-option-disabled-color: #9ca3af; /* Gray 400 */
+  --sl-option-check-width: 1.25rem;
+
+  /* Outros Elementos */
+  --sl-search-padding: 0.5rem 0.75rem;
+  --sl-placeholder-color: #6b7280; /* Gray 500 */
+  --sl-disabled-bg: #f9fafb; /* Gray 50 */
+  --sl-disabled-opacity: 0.6;
+
+  /* Ícones */
+  --sl-chevron-color: #9ca3af; /* Gray 400 */
+
+  /* Labels */
+  --sl-label-color: #374151; /* Gray 700 */
+  --sl-required-color: #374151; /* Gray 700 */
+}
