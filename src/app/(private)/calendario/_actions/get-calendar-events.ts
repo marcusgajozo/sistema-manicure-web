@@ -1,6 +1,25 @@
 "use server";
 
+import { DAY_OF_WEEK_MAP } from "@/common/constants/day-of-week-map";
 import { apiClient } from "@/common/services/api/server-client";
+
+const EVENT_COLORS = {
+  APPOINTMENT: {
+    backgroundColor: "#10b981",
+    borderColor: "#059669",
+  },
+  TIME_OFF: {
+    backgroundColor: "#ef4444",
+    borderColor: "#dc2626",
+  },
+  NOTIFICATION: {
+    backgroundColor: "#f59e0b",
+    borderColor: "#d97706",
+  },
+  SCHEDULE: {
+    backgroundColor: "#e0e7ff",
+  },
+} as const;
 
 export async function getCalendarEventsAction(params?: {
   startDate?: string;
@@ -12,89 +31,46 @@ export async function getCalendarEventsAction(params?: {
 
   const [appointmentsRes, timeOffsRes, schedulesRes, notificationsRes] =
     await Promise.all([
-      apiClient
-        .callRoute("/appointments", { method: "get", queryParams })
-        .catch(() => null),
-      apiClient
-        .callRoute("/time-offs", { method: "get", queryParams })
-        .catch(() => null),
-      apiClient
-        .callRoute("/schedule-templates", { method: "get" })
-        .catch(() => null),
-      apiClient
-        .callRoute("/notifications", { method: "get", queryParams })
-        .catch(() => null),
+      apiClient.callRoute("/appointments", { method: "get", queryParams }),
+      apiClient.callRoute("/time-offs", { method: "get", queryParams }),
+      apiClient.callRoute("/schedule-templates", {
+        method: "get",
+        queryParams,
+      }),
+      apiClient.callRoute("/notifications", { method: "get", queryParams }),
     ]);
 
-  const appointments = (appointmentsRes as { data?: unknown })?.data
-    ? ((appointmentsRes as { data: unknown }).data as Array<{
-        id: string;
-        clientName: string;
-        procedureName: string;
-        startDate: string;
-        endDate: string;
-      }>)
-    : [];
-
-  const timeOffs = (timeOffsRes as { data?: unknown })?.data
-    ? ((timeOffsRes as { data: unknown }).data as Array<{
-        id: string;
-        reason: string;
-        startDate: string;
-        endDate: string;
-      }>)
-    : [];
-
-  const schedules = (schedulesRes as { data?: unknown })?.data
-    ? ((schedulesRes as { data: unknown }).data as Array<{
-        id: string;
-        dayOfWeek: string;
-        startTime: string;
-        endTime: string;
-      }>)
-    : [];
-
-  const notifications = (notificationsRes as { data?: unknown })?.data
-    ? ((notificationsRes as { data: unknown }).data as Array<{
-        id: string;
-        type?: string;
-        startDate?: string;
-        endDate?: string;
-        sendDate?: string;
-        createdAt?: string;
-        date?: string;
-      }>)
-    : [];
+  const appointments = appointmentsRes.data;
+  const timeOffs = timeOffsRes.data;
+  const schedules = schedulesRes.data;
+  const notifications = notificationsRes.data;
 
   const events = [];
 
-  // Appointments (green)
   for (const app of appointments) {
     events.push({
       id: `app-${app.id}`,
       title: `${app.clientName} - ${app.procedureName}`,
       start: app.startDate,
       end: app.endDate,
-      backgroundColor: "#10b981", // Emerald 500
-      borderColor: "#059669",
+      backgroundColor: EVENT_COLORS.APPOINTMENT.backgroundColor,
+      borderColor: EVENT_COLORS.APPOINTMENT.borderColor,
       extendedProps: { type: "appointment", data: app },
     });
   }
 
-  // Time-offs (red / blocked)
   for (const to of timeOffs) {
     events.push({
       id: `to-${to.id}`,
       title: `Ausência: ${to.reason}`,
       start: to.startDate,
       end: to.endDate,
-      backgroundColor: "#ef4444", // Red 500
-      borderColor: "#dc2626",
+      backgroundColor: EVENT_COLORS.TIME_OFF.backgroundColor,
+      borderColor: EVENT_COLORS.TIME_OFF.borderColor,
       extendedProps: { type: "time-off", data: to },
     });
   }
 
-  // Notifications (blue/orange depending on type, or default orange)
   for (const notif of notifications) {
     events.push({
       id: `notif-${notif.id}`,
@@ -106,33 +82,26 @@ export async function getCalendarEventsAction(params?: {
         notif.sendDate ||
         notif.createdAt ||
         notif.date,
-      backgroundColor: "#f59e0b", // Amber 500
-      borderColor: "#d97706",
+      backgroundColor: EVENT_COLORS.NOTIFICATION.backgroundColor,
+      borderColor: EVENT_COLORS.NOTIFICATION.borderColor,
       extendedProps: { type: "notification", data: notif },
     });
   }
 
-  // Schedule Templates (recurring background events)
-  // fullcalendar recurring events need daysOfWeek and startTime/endTime
-  const dayOfWeekMap: Record<string, number> = {
-    sunday: 0,
-    monday: 1,
-    tuesday: 2,
-    wednesday: 3,
-    thursday: 4,
-    friday: 5,
-    saturday: 6,
-  };
-
   for (const sched of schedules) {
-    if (dayOfWeekMap[sched.dayOfWeek] !== undefined) {
+    if (
+      DAY_OF_WEEK_MAP[sched.dayOfWeek as keyof typeof DAY_OF_WEEK_MAP] !==
+      undefined
+    ) {
       events.push({
         id: `sched-${sched.id}`,
-        daysOfWeek: [dayOfWeekMap[sched.dayOfWeek]],
+        daysOfWeek: [
+          DAY_OF_WEEK_MAP[sched.dayOfWeek as keyof typeof DAY_OF_WEEK_MAP],
+        ],
         startTime: sched.startTime,
         endTime: sched.endTime,
         display: "background",
-        backgroundColor: "#e0e7ff", // Indigo 100 for available slots
+        backgroundColor: EVENT_COLORS.SCHEDULE.backgroundColor,
       });
     }
   }
