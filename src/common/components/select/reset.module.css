@@ -1,0 +1,13 @@
+.base {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-style: solid;
+  border-width: 0;
+}
+
+.base *,
+.base *::before,
+.base *::after {
+  box-sizing: border-box;
+}

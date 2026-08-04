@@ -1,10 +1,11 @@
-.container {
+.container.container {
   position: relative;
   display: block;
   width: 100%;
   font-family: var(--sl-font-family);
   font-size: var(--sl-font-size);
   box-sizing: border-box;
+  padding: 2px;
 }
 
 .label {
@@ -23,7 +24,7 @@
 
 .description {
   font-size: var(--sl-desc-size, 0.75rem);
-  color: var(--sl-placeholder-color, #6b7280);
+  color: var(--sl-placeholder-color, var(--ui-gray-500, #6b7280));
 }
 
 .disabled {
@@ -39,7 +40,7 @@
 }
 
 .viewText {
-  color: var(--sl-text-color, #111827);
+  color: var(--sl-text-color, var(--ui-gray-900, #111827));
   font-size: var(--sl-font-size, 0.875rem);
   margin: 0;
   padding: 0.5rem 0;

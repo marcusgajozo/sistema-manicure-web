@@ -1,10 +1,14 @@
+.positioner {
+  z-index: var(--sl-dropdown-z-index, 9999);
+}
+
 .dropdown {
   width: var(--anchor-width);
   background: var(--sl-dropdown-bg);
   border: var(--sl-border-width) solid var(--sl-border-color);
   border-radius: var(--sl-border-radius);
   box-shadow: var(--sl-dropdown-shadow);
-  z-index: var(--sl-dropdown-z-index);
+  z-index: inherit;
   overflow: hidden;
   font-family: var(--sl-font-family);
   font-size: var(--sl-font-size);
@@ -63,7 +67,7 @@
   white-space: nowrap;
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .option {
     padding: 0.75rem 1rem;
     min-height: 44px;

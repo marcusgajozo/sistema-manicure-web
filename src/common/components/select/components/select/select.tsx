@@ -3,6 +3,7 @@ import "../../theme.css";
 import { Combobox } from "@base-ui/react/combobox";
 import * as React from "react";
 
+import resetStyles from "../../reset.module.css";
 import { SelectDropdown } from "../select-dropdown";
 import { SelectTrigger } from "../select-trigger";
 import styles from "./select.module.css";
@@ -82,7 +83,12 @@ export function Select({
 
   return (
     <div
-      className={[styles.container, disabled ? styles.disabled : "", className]
+      className={[
+        resetStyles.base,
+        styles.container,
+        disabled ? styles.disabled : "",
+        className,
+      ]
         .filter(Boolean)
         .join(" ")}
     >
