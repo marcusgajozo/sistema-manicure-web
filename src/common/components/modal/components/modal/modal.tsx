@@ -3,6 +3,7 @@ import "../../theme.css";
 import { Dialog } from "@base-ui/react/dialog";
 import * as React from "react";
 
+import resetStyles from "../../reset.module.css";
 import styles from "./modal.module.css";
 
 const ESCAPE_REASONS = ["escape-key", "close-watcher"];
@@ -60,8 +61,13 @@ export function Root({
 
 type ModalTriggerProps = React.ComponentPropsWithoutRef<typeof Dialog.Trigger>;
 
-export function Trigger(props: ModalTriggerProps) {
-  return <Dialog.Trigger {...props} />;
+export function Trigger({ className, ...props }: ModalTriggerProps) {
+  return (
+    <Dialog.Trigger
+      className={[styles.trigger, className].filter(Boolean).join(" ")}
+      {...props}
+    />
+  );
 }
 
 type ModalPopupProps = React.ComponentPropsWithoutRef<typeof Dialog.Popup> & {
@@ -87,7 +93,12 @@ export function Popup({
   return (
     <Dialog.Portal>
       {!hideBackdrop && <Dialog.Backdrop className={styles.backdrop} />}
-      <Dialog.Popup className={`${styles.popup} ${className || ""}`} {...props}>
+      <Dialog.Popup
+        className={[resetStyles.base, styles.popup, className]
+          .filter(Boolean)
+          .join(" ")}
+        {...props}
+      >
         {!hideCloseIcon && <CloseIcon />}
         {children}
       </Dialog.Popup>
