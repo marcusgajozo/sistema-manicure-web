@@ -1,5 +1,7 @@
 *
 
+!.github
+!.github/**/*
 !.husky
 !.husky/**/*
 !.devcontainer
@@ -24,6 +26,7 @@
 !playwright.config.ts
 !prettier.config.mjs
 !.prettierignore
+!Dockfile
 !pnpm-lock.yaml
 !pnpm-workspace.yaml
 !postcss.config.mjs
