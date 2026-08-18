@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { createPaginatedResponseSchema } from "../shared/schemas/paginated-response";
+
 export const createAppointmentDtoSchema = z.object({
   procedureId: z.uuid().optional(),
   procedureName: z.string().optional(),
@@ -38,6 +40,5 @@ export const appointmentSchema = z.object({
   endDate: z.string(),
 });
 
-export const appointmentsResponseSchema = z.object({
-  data: z.array(appointmentSchema),
-});
+export const appointmentsPaginatedResponseSchema =
+  createPaginatedResponseSchema(appointmentSchema);

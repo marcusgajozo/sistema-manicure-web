@@ -1,7 +1,6 @@
 "use client";
 
 import "./calendar.css";
-import "./calendar.css";
 
 import { type EventInput } from "@fullcalendar/core";
 import ptBrLocale from "@fullcalendar/core/locales/pt-br";
@@ -11,25 +10,27 @@ import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { useCallback, useRef, useState } from "react";
+import z from "zod";
 
 import { useModal } from "@/common/components/modal";
 import { Select } from "@/common/components/select";
+import { appointmentsPaginatedResponseSchema } from "@/common/services/api/appointments/schemas";
+import { timeOffsResponseSchema } from "@/common/services/api/time-offs/schemas";
 
 import { getCalendarEventsAction } from "../../_actions/get-calendar-events";
-import { AppointmentModal } from "../appointment-modal";
 import { NotificationModal } from "../notification-modal";
 import { SelectTypeModal } from "../select-type-modal";
 import { TimeOffModal } from "../time-off-modal";
 
-type Option = { label: string; value: string };
+interface FullCalendarViewProps {
+  appointments: z.infer<typeof appointmentsPaginatedResponseSchema>["data"];
+  timeOffs: z.infer<typeof timeOffsResponseSchema>["data"];
+}
 
 export function FullCalendarView({
-  clients = [],
-  procedures = [],
-}: {
-  clients?: Option[];
-  procedures?: Option[];
-} = {}) {
+  appointments = [],
+  timeOffs = [],
+}: FullCalendarViewProps) {
   const [events, setEvents] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentDateRange, setCurrentDateRange] = useState<{
@@ -171,13 +172,6 @@ export function FullCalendarView({
       </div>
 
       <SelectTypeModal />
-      <AppointmentModal
-        onSuccess={() => {
-          void fetchEvents();
-        }}
-        clients={clients}
-        procedures={procedures}
-      />
       <TimeOffModal
         onSuccess={() => {
           void fetchEvents();
