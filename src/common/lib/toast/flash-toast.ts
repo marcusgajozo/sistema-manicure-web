@@ -13,6 +13,11 @@ export async function setFlashToast(message: string) {
   });
 }
 
+export async function readFlashToast() {
+  const cookieStore = await cookies();
+  return cookieStore.get(FLASH_TOAST_COOKIE)?.value ?? null;
+}
+
 export async function consumeFlashToast() {
   const cookieStore = await cookies();
   const message = cookieStore.get(FLASH_TOAST_COOKIE)?.value ?? null;

@@ -7,6 +7,7 @@ export const APP_ROUTES = {
   agendamentos: {
     list: "/agendamentos",
     create: "/agendamentos/novo",
+    edit: "/agendamentos/:id/editar",
   },
   clientes: {
     list: "/clientes",

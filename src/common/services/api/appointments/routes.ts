@@ -2,6 +2,7 @@ import { defineApiRoutes } from "typed-route-client/core";
 
 import { apiErrorSchema } from "../shared/schemas/api-error";
 import {
+  appointmentSchema,
   appointmentsPaginatedResponseSchema,
   createAppointmentDtoSchema,
   updateAppointmentDtoSchema,
@@ -23,6 +24,7 @@ export const appointmentsRoutes = defineApiRoutes({
   "/appointments/:id": {
     methods: {
       get: {
+        responseSchema: appointmentSchema,
         errorSchema: apiErrorSchema,
       },
       patch: {

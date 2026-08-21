@@ -1,21 +1,7 @@
-import type { Metadata } from "next";
+import { AgendamentosListPage } from "@/features/agendamentos/presentation";
 
-import { Page } from "@/common/components/page";
-
-export const metadata: Metadata = {
-  title: "Agendamentos",
-};
-
-export default function AgendamentosPage() {
-  return (
-    <Page.Root>
-      <Page.Header
-        title="Agendamentos"
-        description="Lista de agendamentos do salão."
-      />
-      <Page.Content>
-        <p className="text-sm text-muted-foreground">Página em construção.</p>
-      </Page.Content>
-    </Page.Root>
-  );
+export default function Page(props: {
+  searchParams: Promise<{ page?: string; limit?: string }>;
+}) {
+  return <AgendamentosListPage {...props} />;
 }

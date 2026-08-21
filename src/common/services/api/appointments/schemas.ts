@@ -40,5 +40,24 @@ export const appointmentSchema = z.object({
   endDate: z.string(),
 });
 
+export const appointmentDetailSchema = z.object({
+  id: z.string(),
+  clientId: z.string().optional(),
+  clientName: z.string().optional(),
+  phoneClient: z.string().optional(),
+  procedureId: z.string().optional(),
+  procedureName: z.string().optional(),
+  procedurePrice: z.number().optional(),
+  procedureFollowUpDays: z.number().optional(),
+  startDate: z.string(),
+  endDate: z.string(),
+});
+
 export const appointmentsPaginatedResponseSchema =
   createPaginatedResponseSchema(appointmentSchema);
+
+export type Appointment = z.infer<typeof appointmentSchema>;
+export type AppointmentDetail = z.infer<typeof appointmentDetailSchema>;
+export type GetAppointmentsPaginatedResponse = z.infer<
+  typeof appointmentsPaginatedResponseSchema
+>;

@@ -1,6 +1,6 @@
 import { AppToaster } from "@/common/components/app-toaster";
 import { PrivateShell } from "@/common/components/private-shell";
-import { consumeFlashToast } from "@/common/lib/toast/flash-toast";
+import { readFlashToast } from "@/common/lib/toast/flash-toast";
 
 // TODO: ao clicar no item no menu laterial, ir para a listagem
 // TODO: arrancar o header do layout deixar somente o menu lateral no desktop
@@ -12,7 +12,7 @@ export default async function PrivateLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const flashMessage = await consumeFlashToast();
+  const flashMessage = await readFlashToast();
 
   return (
     <>
