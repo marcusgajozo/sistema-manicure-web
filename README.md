@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sistema Manicure Web
 
-## Getting Started
+Interface web do sistema de gestão de salão de manicure. Consome a API REST do [api-sistema-manicure](https://github.com/marcusgajozo/api-sistema-manicure) e cobre agenda, clientes, procedimentos, folgas e notificações.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 com App Router, React 19 e TypeScript
+- Tailwind CSS 4
+- FullCalendar na agenda e TanStack Table nas listagens
+- react-hook-form na validação de formulário
+- Playwright nos testes de ponta a ponta
+- pnpm, commitlint e lint-staged
+
+## Cliente da API gerado do Swagger
+
+Os schemas de validação em Zod e as rotas tipadas não são escritos à mão. Eles saem do Swagger da API:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm api:generate
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Para rodar, a API precisa estar no ar e `API_URL` e `SWAGGER_URL` no `.env` precisam apontar para ela. Quando o contrato da API muda, este comando regenera os tipos, e uma incompatibilidade aparece no build em vez de virar erro em produção.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Organização das rotas
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+O App Router está dividido em dois grupos, cada um com o seu layout: `(public)`, com as telas abertas, e `(private)`, com o que exige sessão.
 
-## Learn More
+## Como rodar
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm install
+cp .env.example .env      # aponte API_URL para a API rodando
+pnpm dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+A aplicação sobe em `http://localhost:3000`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Testes
 
-## Deploy on Vercel
+```bash
+pnpm test:e2e          # Playwright, ponta a ponta
+pnpm test:e2e:ui       # com a interface do Playwright
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Os testes em `test/e2e/` espelham a estrutura de `src/app/`, incluindo o fluxo de autenticação.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Projeto relacionado
+
+- API: [api-sistema-manicure](https://github.com/marcusgajozo/api-sistema-manicure)
